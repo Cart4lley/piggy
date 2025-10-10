@@ -197,7 +197,7 @@
       z-index: 10;
     }
 
-    .signup_button {
+    .signin_button {
       background: white;
       color: #ff9999 !important;
       padding: 6px 20px;
@@ -208,7 +208,7 @@
       display: inline-block;
     }
 
-    .signup_button:hover {
+    .signin_button:hover {
       background: #f0f0f0;
       text-decoration: none;
       color: #ff9999 !important;
@@ -228,7 +228,7 @@
           <a href="#home">HOME</a>
           <a href="#services">SERVICES</a>
           <a href="#about">ABOUT US</a>
-          <a href="#signup" class="signup_button">SIGN UP</a>
+          <a href="{{ url('/signin') }}" class="signin_button">SIGN IN</a>
         </div>
       </div>
     </div>
