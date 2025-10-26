@@ -147,6 +147,14 @@
       text-decoration: none;
       gap: 15px;
       width: fit-content;
+      transition: all 0.3s ease;
+      border-radius: 5px;
+    }
+
+    .button:hover {
+      background: #FFE6E6;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(255, 152, 152, 0.3);
     }
 
     .button-text {
@@ -243,12 +251,12 @@
           More than just a piggy bank.<br>
           Turn your cents into sense.
         </div>
-        <div class="button">
+        <a href="{{ url('/register') }}" class="button">
           <span class="button-text">JOIN US NOW</span>
           <span class="button-icon">
             <i class="fas fa-arrow-right"></i>
           </span>
-        </div>
+        </a>
       </div>
 
       <div class="content_right">
