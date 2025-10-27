@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $user->first_name }}'s Dashboard - PIGGY Bank</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -632,6 +633,137 @@
             color: #374151;
         }
 
+        /* Account Input Enhancement */
+        .account-input-container {
+            position: relative;
+        }
+
+        .account-validation {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .validation-icon {
+            font-size: 16px;
+        }
+
+        .validation-success {
+            color: #22c55e;
+        }
+
+        .validation-error {
+            color: #ef4444;
+        }
+
+        .account-info {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(34, 197, 94, 0.05));
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 8px;
+        }
+
+        .account-info.error {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.05));
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+
+        .account-info h6 {
+            margin: 0 0 4px 0;
+            font-size: 14px;
+            font-weight: 600;
+            color: #22c55e;
+        }
+
+        .account-info.error h6 {
+            color: #ef4444;
+        }
+
+        .account-info p {
+            margin: 0;
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .recent-recipients, .available-accounts {
+            margin-top: 15px;
+            background: rgba(249, 250, 251, 0.8);
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .recent-recipients h5, .available-accounts h5 {
+            margin: 0 0 10px 0;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .recipients-list, .accounts-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .recipient-item, .account-item {
+            background: white;
+            border: 1px solid rgba(229, 231, 235, 0.8);
+            border-radius: 6px;
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .recipient-item:hover, .account-item:hover {
+            background: rgba(59, 130, 246, 0.05);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        .recipient-info, .account-info-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .recipient-info h6, .account-info-item h6 {
+            margin: 0;
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .recipient-info p, .account-info-item p {
+            margin: 2px 0 0 0;
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .recipient-meta, .account-meta {
+            text-align: right;
+            font-size: 11px;
+            color: #9ca3af;
+        }
+
+        .no-accounts-message {
+            text-align: center;
+            padding: 20px;
+            color: #6b7280;
+            font-style: italic;
+        }
+
+        .no-accounts-message i {
+            font-size: 32px;
+            margin-bottom: 10px;
+            opacity: 0.5;
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .dashboard-grid {
@@ -835,12 +967,31 @@
                         <i class="fas fa-user"></i>
                         Recipient Account Number
                     </label>
-                    <input type="text" id="recipient_account" name="recipient_account" class="form-input" 
-                           placeholder="Enter account number (e.g., PIGGY123456)" 
-                           pattern="PIGGY[0-9]{6}" 
-                           title="Account number must be in format PIGGY123456"
-                           required>
+                    <div class="account-input-container">
+                        <input type="text" id="recipient_account" name="recipient_account" class="form-input" 
+                               placeholder="Enter account number (e.g., PIGGY123456)" 
+                               pattern="PIGGY[0-9]{6}" 
+                               title="Account number must be in format PIGGY123456"
+                               autocomplete="off"
+                               required>
+                        <div class="account-validation" id="accountValidation">
+                            <i class="fas fa-spinner fa-spin validation-icon" style="display: none;"></i>
+                        </div>
+                    </div>
+                    <div class="account-info" id="accountInfo" style="display: none;"></div>
                     <small class="input-hint">Enter the recipient's PIGGY account number</small>
+                    
+                    <!-- Recent Recipients -->
+                    <div class="recent-recipients" id="recentRecipients" style="display: none;">
+                        <h5><i class="fas fa-clock"></i> Recent Recipients</h5>
+                        <div class="recipients-list" id="recipientsList"></div>
+                    </div>
+                    
+                    <!-- Available Accounts -->
+                    <div class="available-accounts" id="availableAccounts" style="display: none;">
+                        <h5><i class="fas fa-users"></i> Available Accounts</h5>
+                        <div class="accounts-list" id="accountsList"></div>
+                    </div>
                 </div>
                 
                 <div class="form-group">
@@ -930,19 +1081,222 @@
             const recipientInput = document.getElementById('recipient_account');
             const amountInput = document.getElementById('send_amount');
             const summaryDiv = document.getElementById('transferSummary');
+            let validationTimeout;
+            
+            // Load recent recipients and available accounts
+            loadRecentRecipients();
+            loadAvailableAccounts();
             
             // Add event listeners for real-time updates
-            recipientInput.addEventListener('input', updateTransferSummary);
-            amountInput.addEventListener('input', updateTransferSummary);
-            
-            // Format account number input
             recipientInput.addEventListener('input', function(e) {
+                // Format account number input
                 let value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
                 if (value.length > 6 && !value.startsWith('PIGGY')) {
                     value = 'PIGGY' + value.substring(5, 11);
                 }
                 e.target.value = value;
+                
+                // Clear previous validation timeout
+                clearTimeout(validationTimeout);
+                
+                // Hide suggestions when typing
+                if (value.length > 0) {
+                    document.getElementById('recentRecipients').style.display = 'none';
+                    document.getElementById('availableAccounts').style.display = 'none';
+                }
+                
+                // Validate account after delay
+                if (value.length >= 11) { // PIGGY + 6 digits
+                    showValidationSpinner();
+                    validationTimeout = setTimeout(() => validateAccount(value), 500);
+                } else {
+                    hideAccountValidation();
+                }
+                
+                updateTransferSummary();
             });
+            
+            recipientInput.addEventListener('focus', function() {
+                if (!this.value) {
+                    showSuggestions();
+                }
+            });
+            
+            amountInput.addEventListener('input', updateTransferSummary);
+        }
+
+        function loadRecentRecipients() {
+            fetch('/api/recipients/recent')
+                .then(response => response.json())
+                .then(data => {
+                    const recipientsList = document.getElementById('recipientsList');
+                    const recentRecipients = document.getElementById('recentRecipients');
+                    
+                    if (data.success && data.recipients.length > 0) {
+                        recipientsList.innerHTML = data.recipients.map(recipient => `
+                            <div class="recipient-item" onclick="selectRecipient('${recipient.account_number}')">
+                                <div class="recipient-info">
+                                    <h6>${recipient.account_holder}</h6>
+                                    <p>${recipient.account_number}</p>
+                                </div>
+                                <div class="recipient-meta">
+                                    ${recipient.last_transfer}<br>
+                                    <small>${recipient.amount}</small>
+                                </div>
+                            </div>
+                        `).join('');
+                    } else {
+                        recentRecipients.style.display = 'none';
+                    }
+                })
+                .catch(error => console.error('Error loading recent recipients:', error));
+        }
+
+        function loadAvailableAccounts() {
+            fetch('/api/accounts/available')
+                .then(response => response.json())
+                .then(data => {
+                    const accountsList = document.getElementById('accountsList');
+                    const availableAccounts = document.getElementById('availableAccounts');
+                    
+                    if (data.success && data.accounts.length > 0) {
+                        accountsList.innerHTML = data.accounts.map(account => `
+                            <div class="account-item" onclick="selectRecipient('${account.account_number}')">
+                                <div class="account-info-item">
+                                    <h6>${account.account_holder}</h6>
+                                    <p>${account.account_number} • ${account.account_type}</p>
+                                </div>
+                                <div class="account-meta">
+                                    Active ${account.last_active}
+                                </div>
+                            </div>
+                        `).join('');
+                    } else {
+                        accountsList.innerHTML = `
+                            <div class="no-accounts-message">
+                                <i class="fas fa-users"></i>
+                                <h6>No Other Accounts Available</h6>
+                                <p>There are no other active accounts in the system to send money to.</p>
+                            </div>
+                        `;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading available accounts:', error);
+                    document.getElementById('accountsList').innerHTML = `
+                        <div class="no-accounts-message">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <h6>Unable to Load Accounts</h6>
+                            <p>Please try again later.</p>
+                        </div>
+                    `;
+                });
+        }
+
+        function selectRecipient(accountNumber) {
+            document.getElementById('recipient_account').value = accountNumber;
+            document.getElementById('recentRecipients').style.display = 'none';
+            document.getElementById('availableAccounts').style.display = 'none';
+            validateAccount(accountNumber);
+            updateTransferSummary();
+        }
+
+        function showSuggestions() {
+            const recentRecipients = document.getElementById('recentRecipients');
+            const availableAccounts = document.getElementById('availableAccounts');
+            
+            // Show recent recipients if available
+            if (recentRecipients.querySelector('.recipient-item')) {
+                recentRecipients.style.display = 'block';
+            }
+            
+            // Always show available accounts
+            availableAccounts.style.display = 'block';
+        }
+
+        function validateAccount(accountNumber) {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || 
+                            document.querySelector('input[name="_token"]')?.value;
+                            
+            fetch('/api/account/lookup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify({ account_number: accountNumber })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const accountInfo = document.getElementById('accountInfo');
+                const validationIcon = document.getElementById('accountValidation').querySelector('.validation-icon');
+                
+                hideValidationSpinner();
+                
+                if (data.success) {
+                    // Show success
+                    validationIcon.className = 'fas fa-check-circle validation-icon validation-success';
+                    validationIcon.style.display = 'block';
+                    
+                    // Show account info
+                    accountInfo.innerHTML = `
+                        <h6><i class="fas fa-user-check"></i> Account Found</h6>
+                        <p><strong>${data.account.account_holder}</strong> • ${data.account.account_type} Account</p>
+                    `;
+                    accountInfo.className = 'account-info';
+                    accountInfo.style.display = 'block';
+                } else {
+                    // Show error
+                    validationIcon.className = 'fas fa-exclamation-circle validation-icon validation-error';
+                    validationIcon.style.display = 'block';
+                    
+                    // Show error info
+                    const errorMessages = {
+                        'not_found': 'Account not found in our system',
+                        'inactive': 'This account is inactive and cannot receive transfers',
+                        'self_transfer': 'Cannot send money to your own account'
+                    };
+                    
+                    accountInfo.innerHTML = `
+                        <h6><i class="fas fa-exclamation-triangle"></i> ${data.error_type === 'not_found' ? 'Account Not Found' : 'Transfer Not Allowed'}</h6>
+                        <p>${errorMessages[data.error_type] || data.message}</p>
+                    `;
+                    accountInfo.className = 'account-info error';
+                    accountInfo.style.display = 'block';
+                }
+            })
+            .catch(error => {
+                console.error('Account validation error:', error);
+                hideValidationSpinner();
+                showValidationError('Unable to validate account. Please try again.');
+            });
+        }
+
+        function showValidationSpinner() {
+            const validationIcon = document.getElementById('accountValidation').querySelector('.validation-icon');
+            validationIcon.className = 'fas fa-spinner fa-spin validation-icon';
+            validationIcon.style.display = 'block';
+            document.getElementById('accountInfo').style.display = 'none';
+        }
+
+        function hideValidationSpinner() {
+            const validationIcon = document.getElementById('accountValidation').querySelector('.validation-icon');
+            validationIcon.style.display = 'none';
+        }
+
+        function hideAccountValidation() {
+            document.getElementById('accountValidation').querySelector('.validation-icon').style.display = 'none';
+            document.getElementById('accountInfo').style.display = 'none';
+        }
+
+        function showValidationError(message) {
+            const accountInfo = document.getElementById('accountInfo');
+            accountInfo.innerHTML = `
+                <h6><i class="fas fa-exclamation-triangle"></i> Validation Error</h6>
+                <p>${message}</p>
+            `;
+            accountInfo.className = 'account-info error';
+            accountInfo.style.display = 'block';
         }
 
         function updateTransferSummary() {
@@ -986,6 +1340,11 @@
             document.getElementById('send_amount').value = '';
             document.getElementById('send_description').value = '';
             document.getElementById('transferSummary').style.display = 'none';
+            
+            // Reset validation states
+            hideAccountValidation();
+            document.getElementById('recentRecipients').style.display = 'none';
+            document.getElementById('availableAccounts').style.display = 'none';
         }
     </script>
 </body>

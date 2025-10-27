@@ -149,4 +149,127 @@ class DashboardController extends Controller
             return back()->with('error', 'Money transfer failed. Please try again.');
         }
     }
+
+    /**
+     * Lookup account details for transfer validation
+     */
+    public function lookupAccount(Request $request)
+    {
+        $request->validate([
+            'account_number' => 'required|string'
+        ]);
+
+        $currentUser = Auth::user();
+        $account = Account::with('user')
+            ->where('account_number', $request->account_number)
+            ->first();
+
+        if (!$account) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Account not found',
+                'error_type' => 'not_found'
+            ]);
+        }
+
+        if (!$account->isActive()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Account is inactive and cannot receive transfers',
+                'error_type' => 'inactive'
+            ]);
+        }
+
+        // Check if trying to send to own account
+        if ($account->user_id === $currentUser->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Cannot send money to your own account',
+                'error_type' => 'self_transfer'
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'account' => [
+                'account_number' => $account->account_number,
+                'account_holder' => $account->user->name,
+                'account_type' => ucfirst($account->account_type),
+                'status' => $account->status
+            ]
+        ]);
+    }
+
+    /**
+     * Get available accounts for transfer suggestions
+     */
+    public function getAvailableAccounts(Request $request)
+    {
+        $currentUser = Auth::user();
+        
+        $accounts = Account::with('user')
+            ->where('status', Account::STATUS_ACTIVE)
+            ->where('user_id', '!=', $currentUser->id)
+            ->orderBy('updated_at', 'desc')
+            ->limit(10)
+            ->get();
+
+        if ($accounts->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No other active accounts found in the system',
+                'accounts' => []
+            ]);
+        }
+
+        $accountList = $accounts->map(function ($account) {
+            return [
+                'account_number' => $account->account_number,
+                'account_holder' => $account->user->name,
+                'account_type' => ucfirst($account->account_type),
+                'last_active' => $account->updated_at->diffForHumans()
+            ];
+        });
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Available accounts found',
+            'accounts' => $accountList
+        ]);
+    }
+
+    /**
+     * Get recent transfer recipients
+     */
+    public function getRecentRecipients(Request $request)
+    {
+        $currentUser = Auth::user();
+        $account = $currentUser->account;
+
+        if (!$account) {
+            return response()->json(['success' => false, 'recipients' => []]);
+        }
+
+        // Get recent sent transfers
+        $recentTransfers = $account->transactions()
+            ->where('type', Transaction::TYPE_WITHDRAWAL)
+            ->whereJsonContains('metadata->transfer_type', 'send')
+            ->orderBy('created_at', 'desc')
+            ->limit(5)
+            ->get();
+
+        $recipients = $recentTransfers->map(function ($transaction) {
+            return [
+                'account_number' => $transaction->metadata['recipient_account'] ?? 'Unknown',
+                'account_holder' => $transaction->metadata['recipient_name'] ?? 'Unknown',
+                'last_transfer' => $transaction->created_at->format('M j, Y'),
+                'amount' => '₱' . number_format($transaction->amount, 2)
+            ];
+        })->unique('account_number');
+
+        return response()->json([
+            'success' => true,
+            'recipients' => $recipients->values()
+        ]);
+    }
 }
