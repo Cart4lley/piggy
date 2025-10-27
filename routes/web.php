@@ -138,33 +138,18 @@ Route::get('/test-login', function () {
     return view('test-login', compact('testAccounts'));
 })->name('test.login');
 
-// Email Verification Routes
-Route::middleware(['auth'])->group(function () {
-    Route::get('/email/verify', function () {
-        // If already verified, redirect to dashboard
-        if (auth()->user()->hasVerifiedEmail()) {
-            return redirect('/dashboard')->with('success', 'Email already verified!');
-        }
-        return view('auth.verify-email');
-    })->name('verification.notice');
-    
-    Route::get('/email/verify/{id}/{hash}', function (Illuminate\Foundation\Auth\EmailVerificationRequest $request) {
-        $request->fulfill();
-        return redirect('/dashboard')->with('success', 'Email verified successfully!');
-    })->middleware(['signed'])->name('verification.verify');
-    
-    Route::post('/email/verification-notification', function (Illuminate\Http\Request $request) {
-        $request->user()->sendEmailVerificationNotification();
-        return back()->with('message', 'Verification link sent!');
-    })->middleware(['throttle:6,1'])->name('verification.send');
-});
 
-// Protected routes - require authentication and email verification
-Route::middleware(['auth', 'verified'])->group(function () {
+// Protected routes - require authentication only
+Route::middleware(['auth'])->group(function () {
     // Account Dashboard
     Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
     Route::get('/account/transactions', [\App\Http\Controllers\DashboardController::class, 'transactions'])->name('account.transactions');
     Route::post('/account/send-money', [\App\Http\Controllers\DashboardController::class, 'sendMoney'])->name('account.send-money');
+    
+    // Account Lookup APIs
+    Route::post('/api/account/lookup', [\App\Http\Controllers\DashboardController::class, 'lookupAccount'])->name('api.account.lookup');
+    Route::get('/api/accounts/available', [\App\Http\Controllers\DashboardController::class, 'getAvailableAccounts'])->name('api.accounts.available');
+    Route::get('/api/recipients/recent', [\App\Http\Controllers\DashboardController::class, 'getRecentRecipients'])->name('api.recipients.recent');
     
     // Transaction Management
     Route::get('/transactions', [\App\Http\Controllers\TransactionController::class, 'index'])->name('transactions.index');

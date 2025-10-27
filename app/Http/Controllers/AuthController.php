@@ -39,7 +39,7 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users|unique:pending_registrations',
+            'email' => 'required|string|email|max:255|unique:users',
             'phone' => 'required|string|max:20',
             'date_of_birth' => 'required|date',
             'gender' => 'required|in:male,female,other',
@@ -59,41 +59,43 @@ class AuthController extends Controller
         }
 
         try {
-            // Create pending registration (NOT the actual user account yet)
-            $pendingRegistration = \App\Models\PendingRegistration::create([
-                'first_name' => $request->first_name,
-                'last_name' => $request->last_name,
+            // Create user account directly (no email verification required)
+            $user = User::create([
+                'name' => $request->first_name . ' ' . $request->last_name,
                 'email' => $request->email,
-                'phone' => $request->phone,
-                'date_of_birth' => $request->date_of_birth,
-                'gender' => $request->gender,
-                'address' => $request->address,
-                'city' => $request->city,
-                'zip_code' => $request->zip_code,
-                'occupation' => $request->occupation,
-                'monthly_income' => $request->monthly_income,
-                'initial_deposit' => $request->initial_deposit,
-                'password_hash' => Hash::make($request->password),
-                'verification_token' => bin2hex(random_bytes(32)),
-                'expires_at' => now()->addHours(24),
+                'password' => Hash::make($request->password),
+                'email_verified_at' => now(), // Mark as verified immediately
             ]);
 
-            // Send verification email
-            try {
-                \Illuminate\Support\Facades\Notification::route('mail', $pendingRegistration->email)
-                    ->notify(new \App\Notifications\PendingRegistrationVerification($pendingRegistration));
-                
-                return redirect()->route('registration.success')
-                    ->with('user_email', $pendingRegistration->email)
-                    ->with('success', 'Registration request received! Please check your email to complete your account creation.');
-            } catch (\Exception $emailError) {
-                // If email fails, still redirect to success page but log the error
-                \Log::error('Failed to send registration email: ' . $emailError->getMessage());
-                
-                return redirect()->route('registration.success')
-                    ->with('user_email', $pendingRegistration->email)
-                    ->with('warning', 'Registration saved! Email sending failed, please contact support for verification link.');
-            }
+            // Create initial savings account with the deposit
+            $account = \App\Models\Account::create([
+                'user_id' => $user->id,
+                'account_number' => \App\Models\Account::generateAccountNumber(),
+                'account_type' => 'savings',
+                'balance' => $request->initial_deposit,
+                'available_balance' => $request->initial_deposit,
+                'status' => 'active',
+                'branch_code' => '001001'
+            ]);
+
+            // Create initial deposit transaction
+            \App\Models\Transaction::create([
+                'account_id' => $account->id,
+                'transaction_id' => \App\Models\Transaction::generateTransactionId(),
+                'type' => 'deposit',
+                'amount' => $request->initial_deposit,
+                'balance_before' => 0,
+                'balance_after' => $request->initial_deposit,
+                'description' => 'Initial Deposit - Account Opening',
+                'reference_number' => 'INIT' . rand(100000, 999999),
+                'status' => 'completed',
+            ]);
+
+            // Log the user in automatically
+            Auth::login($user);
+            
+            return redirect()->route('dashboard')
+                ->with('success', 'Welcome to PIGGY Bank! Your account has been created successfully with an initial deposit of $' . number_format($request->initial_deposit, 2) . '.');
 
         } catch (\Exception $e) {
             return redirect()->back()
