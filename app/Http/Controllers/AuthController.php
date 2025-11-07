@@ -55,7 +55,7 @@ class AuthController extends Controller
             'password' => 'required|string|min:8|confirmed|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/',
             'terms_agreement' => 'required|accepted',
             'age_verification' => 'required|accepted',
-            'marketing_consent' => 'nullable|boolean',
+            'marketing_consent' => 'nullable',
         ], [
             'first_name.required' => 'First name is required.',
             'last_name.required' => 'Last name is required.',
@@ -96,6 +96,9 @@ class AuthController extends Controller
                 ->withInput();
         }
 
+        // Handle checkbox values (checkboxes don't send anything when unchecked)
+        $marketingConsent = $request->has('marketing_consent') ? true : false;
+
         try {
             // Create user account directly (no email verification required)
             $user = User::create([
@@ -113,6 +116,7 @@ class AuthController extends Controller
                 'employment_status' => $request->employment_status,
                 'monthly_income' => $request->monthly_income,
                 'employer_name' => $request->employer_name,
+                'marketing_consent' => $marketingConsent,
                 'password' => Hash::make($request->password),
                 'email_verified_at' => now(), // Mark as verified immediately
             ]);

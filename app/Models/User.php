@@ -34,6 +34,7 @@ class User extends Authenticatable
         'monthly_income',
         'employer_name',
         'initial_deposit',
+        'marketing_consent',
         'email_verified_at',
     ];
 
