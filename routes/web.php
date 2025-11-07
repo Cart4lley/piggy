@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PaymentController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -157,14 +158,17 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/transactions/{transaction}/details', [\App\Http\Controllers\TransactionController::class, 'details'])->name('transactions.details');
     Route::get('/transactions/export/csv', [\App\Http\Controllers\TransactionController::class, 'export'])->name('transactions.export');
     
+    // Payment Module Routes
+    Route::get('/payments', [PaymentController::class, 'index'])->name('payment.index');
+    Route::get('/payments/{category}', [PaymentController::class, 'category'])->name('payment.category');
+    Route::get('/payments/{category}/{company}', [PaymentController::class, 'company'])->name('payment.company');
+    Route::post('/payments/process', [PaymentController::class, 'processPayment'])->name('payment.process');
+    
     // Legacy routes for existing features
     Route::get('/transaction', [AccountController::class, 'transactions']);
     Route::get('/history', [AccountController::class, 'history']);
     Route::get('/withdrawal', function () {
         return view('withdrawal');
-    });
-    Route::get('/payment', function () {
-        return view('payment');
     });
     Route::get('/reports', function () {
         return view('reports');

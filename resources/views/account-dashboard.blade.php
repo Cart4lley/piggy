@@ -285,6 +285,18 @@
             text-decoration: none;
         }
 
+        .btn-payments {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .btn-payments:hover {
+            background: linear-gradient(135deg, #059669, #047857);
+            transform: translateY(-2px);
+            color: white;
+            text-decoration: none;
+        }
+
         .btn-history {
             background: linear-gradient(135deg, #FF9898, #FF7B7B);
             color: white;
@@ -687,37 +699,7 @@
             color: #6b7280;
         }
 
-        .recent-recipients, .available-accounts {
-            margin-top: 15px;
-            background: rgba(249, 250, 251, 0.8);
-            border-radius: 8px;
-            padding: 15px;
-        }
 
-        .recent-recipients h5, .available-accounts h5 {
-            margin: 0 0 10px 0;
-            font-size: 14px;
-            font-weight: 600;
-            color: #374151;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .recipients-list, .accounts-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .recipient-item, .account-item {
-            background: white;
-            border: 1px solid rgba(229, 231, 235, 0.8);
-            border-radius: 6px;
-            padding: 10px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
             justify-content: space-between;
             align-items: center;
         }
@@ -739,30 +721,7 @@
             color: #374151;
         }
 
-        .recipient-info p, .account-info-item p {
-            margin: 2px 0 0 0;
-            font-size: 12px;
-            color: #6b7280;
-        }
 
-        .recipient-meta, .account-meta {
-            text-align: right;
-            font-size: 11px;
-            color: #9ca3af;
-        }
-
-        .no-accounts-message {
-            text-align: center;
-            padding: 20px;
-            color: #6b7280;
-            font-style: italic;
-        }
-
-        .no-accounts-message i {
-            font-size: 32px;
-            margin-bottom: 10px;
-            opacity: 0.5;
-        }
 
         /* Responsive Design */
         @media (max-width: 768px) {
@@ -879,6 +838,10 @@
                         <i class="fas fa-paper-plane"></i>
                         Send Money
                     </button>
+                    <a href="{{ route('payment.index') }}" class="action-btn btn-payments">
+                        <i class="fas fa-credit-card"></i>
+                        Pay Bills
+                    </a>
                     <a href="{{ route('transactions.index') }}" class="action-btn btn-history">
                         <i class="fas fa-history"></i>
                         View History
@@ -980,18 +943,6 @@
                     </div>
                     <div class="account-info" id="accountInfo" style="display: none;"></div>
                     <small class="input-hint">Enter the recipient's PIGGY account number</small>
-                    
-                    <!-- Recent Recipients -->
-                    <div class="recent-recipients" id="recentRecipients" style="display: none;">
-                        <h5><i class="fas fa-clock"></i> Recent Recipients</h5>
-                        <div class="recipients-list" id="recipientsList"></div>
-                    </div>
-                    
-                    <!-- Available Accounts -->
-                    <div class="available-accounts" id="availableAccounts" style="display: none;">
-                        <h5><i class="fas fa-users"></i> Available Accounts</h5>
-                        <div class="accounts-list" id="accountsList"></div>
-                    </div>
                 </div>
                 
                 <div class="form-group">
@@ -1083,9 +1034,7 @@
             const summaryDiv = document.getElementById('transferSummary');
             let validationTimeout;
             
-            // Load recent recipients and available accounts
-            loadRecentRecipients();
-            loadAvailableAccounts();
+
             
             // Add event listeners for real-time updates
             recipientInput.addEventListener('input', function(e) {
@@ -1099,11 +1048,7 @@
                 // Clear previous validation timeout
                 clearTimeout(validationTimeout);
                 
-                // Hide suggestions when typing
-                if (value.length > 0) {
-                    document.getElementById('recentRecipients').style.display = 'none';
-                    document.getElementById('availableAccounts').style.display = 'none';
-                }
+
                 
                 // Validate account after delay
                 if (value.length >= 11) { // PIGGY + 6 digits
@@ -1125,94 +1070,17 @@
             amountInput.addEventListener('input', updateTransferSummary);
         }
 
-        function loadRecentRecipients() {
-            fetch('/api/recipients/recent')
-                .then(response => response.json())
-                .then(data => {
-                    const recipientsList = document.getElementById('recipientsList');
-                    const recentRecipients = document.getElementById('recentRecipients');
-                    
-                    if (data.success && data.recipients.length > 0) {
-                        recipientsList.innerHTML = data.recipients.map(recipient => `
-                            <div class="recipient-item" onclick="selectRecipient('${recipient.account_number}')">
-                                <div class="recipient-info">
-                                    <h6>${recipient.account_holder}</h6>
-                                    <p>${recipient.account_number}</p>
-                                </div>
-                                <div class="recipient-meta">
-                                    ${recipient.last_transfer}<br>
-                                    <small>${recipient.amount}</small>
-                                </div>
-                            </div>
-                        `).join('');
-                    } else {
-                        recentRecipients.style.display = 'none';
-                    }
-                })
-                .catch(error => console.error('Error loading recent recipients:', error));
-        }
 
-        function loadAvailableAccounts() {
-            fetch('/api/accounts/available')
-                .then(response => response.json())
-                .then(data => {
-                    const accountsList = document.getElementById('accountsList');
-                    const availableAccounts = document.getElementById('availableAccounts');
-                    
-                    if (data.success && data.accounts.length > 0) {
-                        accountsList.innerHTML = data.accounts.map(account => `
-                            <div class="account-item" onclick="selectRecipient('${account.account_number}')">
-                                <div class="account-info-item">
-                                    <h6>${account.account_holder}</h6>
-                                    <p>${account.account_number} • ${account.account_type}</p>
-                                </div>
-                                <div class="account-meta">
-                                    Active ${account.last_active}
-                                </div>
-                            </div>
-                        `).join('');
-                    } else {
-                        accountsList.innerHTML = `
-                            <div class="no-accounts-message">
-                                <i class="fas fa-users"></i>
-                                <h6>No Other Accounts Available</h6>
-                                <p>There are no other active accounts in the system to send money to.</p>
-                            </div>
-                        `;
-                    }
-                })
-                .catch(error => {
-                    console.error('Error loading available accounts:', error);
-                    document.getElementById('accountsList').innerHTML = `
-                        <div class="no-accounts-message">
-                            <i class="fas fa-exclamation-triangle"></i>
-                            <h6>Unable to Load Accounts</h6>
-                            <p>Please try again later.</p>
-                        </div>
-                    `;
-                });
-        }
+
+
 
         function selectRecipient(accountNumber) {
             document.getElementById('recipient_account').value = accountNumber;
-            document.getElementById('recentRecipients').style.display = 'none';
-            document.getElementById('availableAccounts').style.display = 'none';
             validateAccount(accountNumber);
             updateTransferSummary();
         }
 
-        function showSuggestions() {
-            const recentRecipients = document.getElementById('recentRecipients');
-            const availableAccounts = document.getElementById('availableAccounts');
-            
-            // Show recent recipients if available
-            if (recentRecipients.querySelector('.recipient-item')) {
-                recentRecipients.style.display = 'block';
-            }
-            
-            // Always show available accounts
-            availableAccounts.style.display = 'block';
-        }
+
 
         function validateAccount(accountNumber) {
             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || 
@@ -1343,8 +1211,6 @@
             
             // Reset validation states
             hideAccountValidation();
-            document.getElementById('recentRecipients').style.display = 'none';
-            document.getElementById('availableAccounts').style.display = 'none';
         }
     </script>
 </body>
