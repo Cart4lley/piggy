@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\HistoryController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -164,9 +165,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/payments/{category}/{company}', [PaymentController::class, 'company'])->name('payment.company');
     Route::post('/payments/process', [PaymentController::class, 'processPayment'])->name('payment.process');
     
+    // History Module Routes
+    Route::get('/history', [HistoryController::class, 'index'])->name('history.index');
+    Route::get('/history/analytics', [HistoryController::class, 'analytics'])->name('history.analytics');
+    Route::post('/history/export', [HistoryController::class, 'export'])->name('history.export');
+    Route::get('/history/transaction/{transaction}', [HistoryController::class, 'show'])->name('history.show');
+    
     // Legacy routes for existing features
     Route::get('/transaction', [AccountController::class, 'transactions']);
-    Route::get('/history', [AccountController::class, 'history']);
     Route::get('/withdrawal', function () {
         return view('withdrawal');
     });
