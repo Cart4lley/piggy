@@ -30,8 +30,11 @@ class User extends Authenticatable
         'city',
         'zip_code',
         'occupation',
+        'employment_status',
         'monthly_income',
+        'employer_name',
         'initial_deposit',
+        'email_verified_at',
     ];
 
     /**

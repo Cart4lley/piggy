@@ -266,6 +266,102 @@
       text-decoration: underline;
     }
 
+    /* Enhanced error styling */
+    .error-message {
+      display: none;
+      color: #dc2626;
+      font-size: 12px;
+      margin-top: 4px;
+      font-weight: 500;
+      font-family: 'Inter', sans-serif;
+    }
+
+    input.invalid, select.invalid {
+      border-color: #dc2626 !important;
+      box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1) !important;
+      background-color: #fef2f2 !important;
+    }
+
+    input.valid, select.valid {
+      border-color: #10b981 !important;
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
+    }
+
+    /* Improved alert styling */
+    .alert {
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .alert-success {
+      background-color: #f0fdf4;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+    }
+
+    .alert-error {
+      background-color: #fef2f2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+
+    .alert ul {
+      margin: 8px 0 0 0;
+      padding-left: 16px;
+    }
+
+    .alert li {
+      margin-bottom: 4px;
+    }
+
+    .alert i {
+      margin-right: 8px;
+    }
+
+    /* Required field indicator */
+    .required {
+      color: #dc2626;
+      font-weight: bold;
+    }
+
+    /* Form completion progress */
+    .form-progress {
+      position: sticky;
+      top: 20px;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      border: 1px solid #f1f5f9;
+    }
+
+    .progress-text {
+      font-size: 12px;
+      color: #64748B;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    .progress-bar {
+      height: 4px;
+      background: #f1f5f9;
+      border-radius: 2px;
+      margin-top: 8px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: #FF9898;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
     /* Register button */
     .register-btn {
       width: 100%;
@@ -548,6 +644,15 @@
         
         <form id="register-form" class="register-form" method="POST" action="{{ route('register') }}">
           @csrf
+          
+          <!-- Form Progress Indicator -->
+          <div class="form-progress">
+            <div class="progress-text">Form Completion: <span id="completion-percentage">0%</span></div>
+            <div class="progress-bar">
+              <div class="progress-fill" id="progress-fill"></div>
+            </div>
+          </div>
+          
           <!-- Personal Information -->
           <div class="form-section">
             <div class="section-title">
@@ -574,10 +679,10 @@
             <label for="gender">Gender</label>
             <select id="gender" name="gender">
               <option value="">Select Gender</option>
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-              <option value="other">Other</option>
-              <option value="prefer-not-to-say">Prefer not to say</option>
+              <option value="male" {{ old('gender') == 'male' ? 'selected' : '' }}>Male</option>
+              <option value="female" {{ old('gender') == 'female' ? 'selected' : '' }}>Female</option>
+              <option value="other" {{ old('gender') == 'other' ? 'selected' : '' }}>Other</option>
+              <option value="prefer-not-to-say" {{ old('gender') == 'prefer-not-to-say' ? 'selected' : '' }}>Prefer not to say</option>
             </select>
           </div>
 
@@ -588,23 +693,23 @@
             </div>
 
             <label for="email">Email Address <span class="required">*</span></label>
-            <input type="email" id="email" name="email" placeholder="juan.delacruz@gmail.com" required>
+            <input type="email" id="email" name="email" value="{{ old('email') }}" placeholder="juan.delacruz@gmail.com" required>
             <div class="error-message" id="email-error"></div>
 
             <label for="phone">Phone Number <span class="required">*</span></label>
-            <input type="tel" id="phone" name="phone" placeholder="+63 912 345 6789" required>
+            <input type="tel" id="phone" name="phone" value="{{ old('phone') }}" placeholder="+63 912 345 6789" required>
             <div class="error-message" id="phone-error"></div>
 
             <label for="address">Home Address <span class="required">*</span></label>
-            <input type="text" id="address" name="address" placeholder="123 Rizal Street, Barangay San Antonio" required>
+            <input type="text" id="address" name="address" value="{{ old('address') }}" placeholder="123 Rizal Street, Barangay San Antonio" required>
             <div class="error-message" id="address-error"></div>
 
             <label for="city">City <span class="required">*</span></label>
-            <input type="text" id="city" name="city" placeholder="Makati City" required>
+            <input type="text" id="city" name="city" value="{{ old('city') }}" placeholder="Makati City" required>
             <div class="error-message" id="city-error"></div>
 
             <label for="zip_code">ZIP Code <span class="required">*</span></label>
-            <input type="text" id="zip_code" name="zip_code" placeholder="1200" required>
+            <input type="text" id="zip_code" name="zip_code" value="{{ old('zip_code') }}" placeholder="1200" required>
             <div class="error-message" id="zip_code-error"></div>
           </div>
 
@@ -615,11 +720,11 @@
             </div>
 
             <label for="occupation">Occupation <span class="required">*</span></label>
-            <input type="text" id="occupation" name="occupation" placeholder="Software Engineer, Teacher, etc." required>
+            <input type="text" id="occupation" name="occupation" value="{{ old('occupation') }}" placeholder="Software Engineer, Teacher, etc." required>
             <div class="error-message" id="occupation-error"></div>
 
             <label for="initial_deposit">Initial Deposit Amount <span class="required">*</span></label>
-            <input type="number" id="initial_deposit" name="initial_deposit" min="500" max="1000000" step="0.01" placeholder="5000.00" required>
+            <input type="number" id="initial_deposit" name="initial_deposit" value="{{ old('initial_deposit') }}" min="500" max="1000000" step="0.01" placeholder="5000.00" required>
             <div class="error-message" id="initial_deposit-error"></div>
           </div>
 
@@ -630,7 +735,7 @@
             </div>
 
             <label for="username">Username <span class="required">*</span></label>
-            <input type="text" id="username" name="username" placeholder="jdelacruz123" required>
+            <input type="text" id="username" name="username" value="{{ old('username') }}" placeholder="jdelacruz123" required>
             <div class="error-message" id="username-error"></div>
 
             <label for="password">Password <span class="required">*</span></label>
@@ -667,41 +772,41 @@
                 <label for="employment-status">Employment Status <span class="required">*</span></label>
                 <select id="employment-status" name="employment_status" required>
                   <option value="">Select Status</option>
-                  <option value="employed">Employed</option>
-                  <option value="self-employed">Self-Employed</option>
-                  <option value="student">Student</option>
-                  <option value="unemployed">Unemployed</option>
-                  <option value="retired">Retired</option>
+                  <option value="employed" {{ old('employment_status') == 'employed' ? 'selected' : '' }}>Employed</option>
+                  <option value="self-employed" {{ old('employment_status') == 'self-employed' ? 'selected' : '' }}>Self-Employed</option>
+                  <option value="student" {{ old('employment_status') == 'student' ? 'selected' : '' }}>Student</option>
+                  <option value="unemployed" {{ old('employment_status') == 'unemployed' ? 'selected' : '' }}>Unemployed</option>
+                  <option value="retired" {{ old('employment_status') == 'retired' ? 'selected' : '' }}>Retired</option>
                 </select>
               </div>
               <div class="form-group">
                 <label for="monthly-income">Monthly Income (PHP)</label>
-                <input type="number" id="monthly-income" name="monthly_income" min="0" max="10000000" step="0.01" placeholder="25000.00">
+                <input type="number" id="monthly-income" name="monthly_income" value="{{ old('monthly_income') }}" min="0" max="10000000" step="0.01" placeholder="25000.00">
               </div>
             </div>
 
             <label for="employer-name">Employer/Company Name</label>
-            <input type="text" id="employer-name" name="employer_name" placeholder="Ayala Corporation">
+            <input type="text" id="employer-name" name="employer_name" value="{{ old('employer_name') }}" placeholder="Ayala Corporation">
           </div>
 
           <!-- Terms and Conditions -->
           <div class="form-section">
             <div class="checkbox-container">
-              <input type="checkbox" id="terms-agreement" name="terms_agreement" required>
+              <input type="checkbox" id="terms-agreement" name="terms_agreement" {{ old('terms_agreement') ? 'checked' : '' }} required>
               <div class="checkbox-text">
                 I agree to the <a href="#" target="_blank">Terms & Conditions</a> and <a href="#" target="_blank">Privacy Policy</a>. I understand that this is a demo banking system for educational purposes. <span class="required">*</span>
               </div>
             </div>
 
             <div class="checkbox-container">
-              <input type="checkbox" id="marketing-consent" name="marketing_consent">
+              <input type="checkbox" id="marketing-consent" name="marketing_consent" {{ old('marketing_consent') ? 'checked' : '' }}>
               <div class="checkbox-text">
                 I consent to receive marketing communications and promotional offers from Piggy Banking.
               </div>
             </div>
 
             <div class="checkbox-container">
-              <input type="checkbox" id="age-verification" name="age_verification" required>
+              <input type="checkbox" id="age-verification" name="age_verification" {{ old('age_verification') ? 'checked' : '' }} required>
               <div class="checkbox-text">
                 I confirm that I am at least 18 years old and legally eligible to open a bank account. <span class="required">*</span>
               </div>
@@ -844,6 +949,93 @@
         this.classList.add('valid');
         document.getElementById('dob-error').style.display = 'none';
       }
+    });
+
+    // Display Laravel validation errors on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      @if($errors->any())
+        // Show specific field errors
+        @foreach($errors->keys() as $field)
+          const fieldElement = document.querySelector('[name="{{ $field }}"]');
+          const errorElement = document.getElementById('{{ $field }}-error');
+          
+          if (fieldElement) {
+            fieldElement.classList.add('invalid');
+            fieldElement.style.borderColor = '#dc2626';
+          }
+          
+          if (errorElement) {
+            errorElement.textContent = '{{ $errors->first($field) }}';
+            errorElement.style.display = 'block';
+            errorElement.style.color = '#dc2626';
+            errorElement.style.fontSize = '12px';
+            errorElement.style.marginTop = '4px';
+          }
+        @endforeach
+
+        // Scroll to first error field
+        const firstErrorField = document.querySelector('.invalid');
+        if (firstErrorField) {
+          firstErrorField.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'center' 
+          });
+          firstErrorField.focus();
+        }
+      @endif
+
+      // Clear error styling on input focus and update progress
+      const inputs = document.querySelectorAll('input, select');
+      inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+          this.classList.remove('invalid');
+          this.style.borderColor = '#FF9898';
+          
+          const fieldName = this.getAttribute('name');
+          const errorElement = document.getElementById(fieldName + '-error');
+          if (errorElement) {
+            errorElement.style.display = 'none';
+          }
+        });
+
+        input.addEventListener('input', updateFormProgress);
+        input.addEventListener('change', updateFormProgress);
+      });
+
+      // Form progress tracking
+      function updateFormProgress() {
+        const requiredFields = document.querySelectorAll('input[required], select[required]');
+        const checkboxes = document.querySelectorAll('input[type="checkbox"][required]');
+        
+        let completedFields = 0;
+        const totalFields = requiredFields.length;
+
+        // Check regular required fields
+        requiredFields.forEach(field => {
+          if (field.type === 'checkbox') {
+            if (field.checked) completedFields++;
+          } else if (field.value.trim() !== '') {
+            completedFields++;
+          }
+        });
+
+        const percentage = Math.round((completedFields / totalFields) * 100);
+        document.getElementById('completion-percentage').textContent = percentage + '%';
+        document.getElementById('progress-fill').style.width = percentage + '%';
+
+        // Change progress bar color based on completion
+        const progressFill = document.getElementById('progress-fill');
+        if (percentage < 50) {
+          progressFill.style.background = '#ef4444';
+        } else if (percentage < 80) {
+          progressFill.style.background = '#f59e0b';
+        } else {
+          progressFill.style.background = '#10b981';
+        }
+      }
+
+      // Initial progress calculation
+      updateFormProgress();
     });
   </script>
 </body>
