@@ -50,7 +50,6 @@ class AuthController extends Controller
             'employment_status' => 'required|in:employed,self-employed,student,unemployed,retired',
             'monthly_income' => 'required|numeric|min:0|max:10000000',
             'employer_name' => 'nullable|string|max:255',
-            'initial_deposit' => 'required|numeric|min:500|max:1000000',
             'username' => 'required|string|min:3|max:50|unique:users,name',
             'password' => 'required|string|min:8|confirmed|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/',
             'terms_agreement' => 'required|accepted',
@@ -74,9 +73,6 @@ class AuthController extends Controller
             'monthly_income.required' => 'Monthly income is required.',
             'monthly_income.min' => 'Monthly income cannot be negative.',
             'monthly_income.max' => 'Monthly income seems unusually high.',
-            'initial_deposit.required' => 'Initial deposit amount is required.',
-            'initial_deposit.min' => 'Minimum initial deposit is ₱500.',
-            'initial_deposit.max' => 'Maximum initial deposit is ₱1,000,000.',
             'username.required' => 'Username is required.',
             'username.min' => 'Username must be at least 3 characters.',
             'username.unique' => 'This username is already taken.',
@@ -121,35 +117,22 @@ class AuthController extends Controller
                 'email_verified_at' => now(), // Mark as verified immediately
             ]);
 
-            // Create initial savings account with the deposit
+            // Create initial savings account with zero balance
             $account = \App\Models\Account::create([
                 'user_id' => $user->id,
                 'account_number' => \App\Models\Account::generateAccountNumber(),
                 'account_type' => 'savings',
-                'balance' => $request->initial_deposit,
-                'available_balance' => $request->initial_deposit,
+                'balance' => 0.00,
+                'available_balance' => 0.00,
                 'status' => 'active',
                 'branch_code' => '001001'
-            ]);
-
-            // Create initial deposit transaction
-            \App\Models\Transaction::create([
-                'account_id' => $account->id,
-                'transaction_id' => \App\Models\Transaction::generateTransactionId(),
-                'type' => 'deposit',
-                'amount' => $request->initial_deposit,
-                'balance_before' => 0,
-                'balance_after' => $request->initial_deposit,
-                'description' => 'Initial Deposit - Account Opening',
-                'reference_number' => 'INIT' . rand(100000, 999999),
-                'status' => 'completed',
             ]);
 
             // Log the user in automatically
             Auth::login($user);
             
             return redirect()->route('dashboard')
-                ->with('success', 'Welcome to PIGGY Bank! Your account has been created successfully with an initial deposit of $' . number_format($request->initial_deposit, 2) . '.');
+                ->with('success', 'Welcome to PIGGY Bank! Your account has been created successfully. You can now make your first deposit via bank transfer.');
 
         } catch (\Exception $e) {
             return redirect()->back()

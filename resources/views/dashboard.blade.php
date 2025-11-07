@@ -338,15 +338,9 @@
           </a>
         </li>
         <li class="nav-item">
-          <a href="/transaction" class="nav-link">
-            <i class="nav-icon fas fa-cog"></i>
-            Transaction
-          </a>
-        </li>
-        <li class="nav-item">
-          <a href="/withdrawal" class="nav-link">
-            <i class="nav-icon fas fa-money-bill-wave"></i>
-            Withdrawal
+          <a href="{{ route('bank-transfer.index') }}" class="nav-link">
+            <i class="nav-icon fas fa-university"></i>
+            Bank Transfer
           </a>
         </li>
         <li class="nav-item">

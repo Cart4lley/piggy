@@ -16,7 +16,7 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #FFB6C1 0%, #FF9898 100%);
+            background: linear-gradient(135deg, #ff9999 0%, #ffb3b3 50%, #ffc9c9 100%);
             min-height: 100vh;
             color: #2d3748;
         }
@@ -285,6 +285,18 @@
             text-decoration: none;
         }
 
+        .btn-deposit {
+            background: linear-gradient(135deg, #ff9999, #ff7a7a);
+            color: white;
+        }
+
+        .btn-deposit:hover {
+            background: linear-gradient(135deg, #ff7a7a, #ff5e5e);
+            transform: translateY(-2px);
+            color: white;
+            text-decoration: none;
+        }
+
         .btn-payments {
             background: linear-gradient(135deg, #10b981, #059669);
             color: white;
@@ -298,12 +310,12 @@
         }
 
         .btn-history {
-            background: linear-gradient(135deg, #FF9898, #FF7B7B);
+            background: linear-gradient(135deg, #6b7280, #4b5563);
             color: white;
         }
 
         .btn-history:hover {
-            background: linear-gradient(135deg, #FF7B7B, #FF5E5E);
+            background: linear-gradient(135deg, #4b5563, #374151);
             transform: translateY(-2px);
             color: white;
             text-decoration: none;
@@ -834,6 +846,10 @@
                 </div>
 
                 <div class="account-actions">
+                    <a href="{{ route('bank-transfer.index') }}" class="action-btn btn-deposit">
+                        <i class="fas fa-university"></i>
+                        Bank Transfer
+                    </a>
                     <button class="action-btn btn-send-money" onclick="openModal('sendMoneyModal')">
                         <i class="fas fa-paper-plane"></i>
                         Send Money

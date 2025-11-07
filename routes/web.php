@@ -5,6 +5,7 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\HistoryController;
+use App\Http\Controllers\BankTransferController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -170,6 +171,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/history/analytics', [HistoryController::class, 'analytics'])->name('history.analytics');
     Route::post('/history/export', [HistoryController::class, 'export'])->name('history.export');
     Route::get('/history/transaction/{transaction}', [HistoryController::class, 'show'])->name('history.show');
+    
+    // Bank Transfer Routes
+    Route::get('/bank-transfer', [BankTransferController::class, 'index'])->name('bank-transfer.index');
+    Route::post('/bank-transfer/deposit', [BankTransferController::class, 'deposit'])->name('bank-transfer.deposit');
+    Route::get('/bank-transfer/history', [BankTransferController::class, 'history'])->name('bank-transfer.history');
     
     // Legacy routes for existing features
     Route::get('/transaction', [AccountController::class, 'transactions']);
