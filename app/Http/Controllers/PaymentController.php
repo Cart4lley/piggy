@@ -22,7 +22,7 @@ class PaymentController extends Controller
 
         $categories = $this->getPaymentCategories();
         
-        return view('payment.index', compact('user', 'account', 'categories'));
+        return view('pay-bills', compact('user', 'account', 'categories'));
     }
 
     public function category($categorySlug)

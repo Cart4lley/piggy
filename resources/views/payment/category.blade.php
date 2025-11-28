@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $category['name'] }} - PIGGY Payments</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lalezar&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         * {
@@ -15,241 +15,342 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             background: linear-gradient(135deg, #ff9999 0%, #ffb3b3 50%, #ffc9c9 100%);
             min-height: 100vh;
-            padding: 20px;
-            position: relative;
-            overflow-x: hidden;
+            color: #2d3748;
         }
 
-        body::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><radialGradient id="a" cx="50%" cy="50%"><stop offset="0%" stop-color="%23FFD3D3" stop-opacity="0.15"/><stop offset="100%" stop-color="%23FFD3D3" stop-opacity="0"/></radialGradient></defs><circle cx="200" cy="200" r="150" fill="url(%23a)"/><circle cx="800" cy="300" r="200" fill="url(%23a)"/><circle cx="400" cy="700" r="100" fill="url(%23a)"/><circle cx="900" cy="800" r="120" fill="url(%23a)"/></svg>') no-repeat center center;
-            background-size: cover;
-            pointer-events: none;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 1;
-        }
-
-        .back-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            color: #ff7a7a;
-            text-decoration: none;
-            font-weight: 600;
-            margin-bottom: 20px;
-            transition: all 0.2s ease;
-        }
-
-        .back-btn:hover {
-            color: #FF6B6B;
-            transform: translateX(-3px);
-        }
-
-        .breadcrumb {
-            margin-bottom: 32px;
-        }
-
-        .breadcrumb-link {
-            color: #6b7280;
-            text-decoration: none;
-            font-size: 14px;
-        }
-
-        .breadcrumb-link:hover {
-            color: #FF7B7B;
-        }
-
-        .breadcrumb-separator {
-            margin: 0 8px;
-            color: #d1d5db;
-        }
-
-        .category-header {
+        /* Header/Navigation */
+        .header {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
-            border-radius: 20px;
-            padding: 40px;
-            margin-bottom: 40px;
-            text-align: center;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-            border-top: 4px solid var(--category-color);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        .category-icon-large {
-            width: 80px;
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             height: 80px;
-            border-radius: 20px;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #FF9898 0%, #FF7B7B 100%);
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 32px;
+            font-size: 20px;
             color: white;
-            margin: 0 auto 24px;
-            background: var(--category-color);
         }
 
-        .category-title {
-            font-size: 32px;
+        .brand-name {
+            font-family: 'Poppins', sans-serif;
+            font-size: 24px;
             font-weight: 700;
-            color: #1f2937;
-            margin-bottom: 12px;
+            color: #2d3748;
+        }
+
+        .back-btn {
+            background: #FF9898;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-btn:hover {
+            background: #FF7B7B;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 152, 152, 0.3);
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 32px 24px;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 48px 40px;
+            margin-bottom: 32px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+            margin-bottom: 16px;
+            font-weight: 500;
+        }
+
+        .breadcrumb a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .breadcrumb a:hover {
+            color: white;
+        }
+
+        .breadcrumb i {
+            font-size: 12px;
+        }
+
+        .page-title-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .category-icon-large {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: white;
+            flex-shrink: 0;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .category-info {
+            flex: 1;
+        }
+
+        .page-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 36px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
         }
 
         .category-description {
+            color: rgba(255, 255, 255, 0.95);
             font-size: 16px;
-            color: #6b7280;
-            max-width: 600px;
-            margin: 0 auto;
+            line-height: 1.5;
+            font-weight: 400;
         }
 
+        /* Companies Grid */
         .companies-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
             gap: 24px;
         }
 
         .company-card {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
-            border-radius: 16px;
-            padding: 32px;
-            text-decoration: none;
-            color: inherit;
-            transition: all 0.3s ease;
+            border-radius: 20px;
+            padding: 28px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-            border: 2px solid transparent;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
 
         .company-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12);
-            border-color: var(--category-color);
+            transform: translateY(-8px);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
+            border-color: rgba(255, 255, 255, 0.8);
         }
 
         .company-header {
             display: flex;
             align-items: center;
             gap: 16px;
-            margin-bottom: 20px;
         }
 
         .company-logo {
             width: 56px;
             height: 56px;
-            border-radius: 12px;
+            background: linear-gradient(135deg, rgba(255, 152, 152, 0.15), rgba(255, 123, 123, 0.15));
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
-            background: rgba(0, 0, 0, 0.05);
+            font-size: 26px;
+            color: #FF9898;
+            flex-shrink: 0;
+            border: 1px solid rgba(255, 152, 152, 0.2);
         }
 
-        .company-info h3 {
-            font-size: 20px;
+        .company-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .company-name {
+            font-family: 'Poppins', sans-serif;
             font-weight: 600;
-            color: #1f2937;
+            font-size: 18px;
+            color: #2d3748;
             margin-bottom: 4px;
+            line-height: 1.3;
         }
 
-        .company-info p {
-            font-size: 14px;
-            color: #6b7280;
+        .company-description {
+            color: #64748b;
+            font-size: 13px;
+            line-height: 1.5;
         }
 
         .payment-fields {
-            margin-bottom: 20px;
-        }
-
-        .fields-label {
-            font-size: 12px;
-            font-weight: 600;
-            color: #374151;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .fields-list {
             display: flex;
             flex-wrap: wrap;
-            gap: 6px;
+            gap: 8px;
         }
 
         .field-tag {
-            background: rgba(0, 0, 0, 0.05);
-            color: #4b5563;
-            padding: 4px 8px;
-            border-radius: 6px;
+            background: rgba(255, 152, 152, 0.12);
+            color: #FF7B7B;
+            padding: 6px 14px;
+            border-radius: 8px;
             font-size: 12px;
+            font-weight: 500;
+            border: 1px solid rgba(255, 152, 152, 0.2);
         }
 
         .pay-button {
-            width: 100%;
-            background: var(--category-color);
+            background: linear-gradient(135deg, #FF9898 0%, #FF7B7B 100%);
             color: white;
             border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
+            padding: 14px 28px;
+            border-radius: 12px;
             font-weight: 600;
+            font-size: 15px;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(255, 152, 152, 0.25);
         }
 
         .pay-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 8px 24px rgba(255, 152, 152, 0.4);
         }
 
-        .back-button {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(255, 255, 255, 0.9);
-            color: #6b7280;
-            text-decoration: none;
-            padding: 12px 20px;
-            border-radius: 12px;
-            font-weight: 500;
-            transition: all 0.2s ease;
-            margin-bottom: 32px;
+        .pay-button:active {
+            transform: translateY(0);
         }
 
-        .back-button:hover {
-            background: white;
-            color: #374151;
-            transform: translateX(-4px);
-        }
+        /* Category-specific colors */
+        .category-phone .category-icon-large { color: #007bff; background: rgba(0, 123, 255, 0.15); border-color: rgba(0, 123, 255, 0.3); }
+        .category-phone .company-logo { background: rgba(0, 123, 255, 0.12); color: #007bff; border-color: rgba(0, 123, 255, 0.2); }
+        .category-phone .field-tag { background: rgba(0, 123, 255, 0.12); color: #007bff; border-color: rgba(0, 123, 255, 0.2); }
+        .category-phone .pay-button { background: linear-gradient(135deg, #007bff 0%, #0056b3 100%); box-shadow: 0 4px 12px rgba(0, 123, 255, 0.25); }
+        
+        .category-utilities .category-icon-large { color: #ff9800; background: rgba(255, 152, 0, 0.15); border-color: rgba(255, 152, 0, 0.3); }
+        .category-utilities .company-logo { background: rgba(255, 152, 0, 0.12); color: #ff9800; border-color: rgba(255, 152, 0, 0.2); }
+        .category-utilities .field-tag { background: rgba(255, 152, 0, 0.12); color: #ff9800; border-color: rgba(255, 152, 0, 0.2); }
+        .category-utilities .pay-button { background: linear-gradient(135deg, #ff9800 0%, #e68900 100%); box-shadow: 0 4px 12px rgba(255, 152, 0, 0.25); }
+        
+        .category-internet .category-icon-large { color: #9c27b0; background: rgba(156, 39, 176, 0.15); border-color: rgba(156, 39, 176, 0.3); }
+        .category-internet .company-logo { background: rgba(156, 39, 176, 0.12); color: #9c27b0; border-color: rgba(156, 39, 176, 0.2); }
+        .category-internet .field-tag { background: rgba(156, 39, 176, 0.12); color: #9c27b0; border-color: rgba(156, 39, 176, 0.2); }
+        .category-internet .pay-button { background: linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%); box-shadow: 0 4px 12px rgba(156, 39, 176, 0.25); }
+        
+        .category-government .category-icon-large { color: #f44336; background: rgba(244, 67, 54, 0.15); border-color: rgba(244, 67, 54, 0.3); }
+        .category-government .company-logo { background: rgba(244, 67, 54, 0.12); color: #f44336; border-color: rgba(244, 67, 54, 0.2); }
+        .category-government .field-tag { background: rgba(244, 67, 54, 0.12); color: #f44336; border-color: rgba(244, 67, 54, 0.2); }
+        .category-government .pay-button { background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%); box-shadow: 0 4px 12px rgba(244, 67, 54, 0.25); }
+        
+        .category-insurance .category-icon-large { color: #4caf50; background: rgba(76, 175, 80, 0.15); border-color: rgba(76, 175, 80, 0.3); }
+        .category-insurance .company-logo { background: rgba(76, 175, 80, 0.12); color: #4caf50; border-color: rgba(76, 175, 80, 0.2); }
+        .category-insurance .field-tag { background: rgba(76, 175, 80, 0.12); color: #4caf50; border-color: rgba(76, 175, 80, 0.2); }
+        .category-insurance .pay-button { background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%); box-shadow: 0 4px 12px rgba(76, 175, 80, 0.25); }
 
-        /* Responsive Design */
         @media (max-width: 768px) {
             .header-content {
                 padding: 0 16px;
                 height: 70px;
             }
 
+            .logo-icon {
+                width: 36px;
+                height: 36px;
+                font-size: 18px;
+            }
+
+            .brand-name {
+                font-size: 20px;
+            }
+
+            .back-btn {
+                padding: 8px 16px;
+                font-size: 13px;
+            }
+
             .main-container {
-                padding: 20px 16px;
+                padding: 24px 16px;
             }
 
-            .category-header {
-                padding: 24px;
+            .page-header {
+                padding: 32px 24px;
             }
 
-            .category-title {
+            .page-title-section {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+
+            .category-icon-large {
+                width: 52px;
+                height: 52px;
                 font-size: 24px;
+            }
+
+            .page-title {
+                font-size: 28px;
+            }
+
+            .category-description {
+                font-size: 14px;
             }
 
             .companies-grid {
@@ -260,35 +361,21 @@
             .company-card {
                 padding: 24px;
             }
-        }
-        .header {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            text-align: center;
-        }
 
-        .header h1 {
-            color: #ff9999;
-            font-family: 'Lalezar', sans-serif;
-            font-size: 32px;
-            font-weight: normal;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
+            .company-logo {
+                width: 50px;
+                height: 50px;
+                font-size: 22px;
+            }
 
-        .header p {
-            color: #6B7280;
-            font-size: 16px;
-            line-height: 1.6;
+            .company-name {
+                font-size: 16px;
+            }
+
+            .pay-button {
+                padding: 12px 24px;
+                font-size: 14px;
+            }
         }
 
         .category-header {
@@ -322,181 +409,68 @@
             margin-bottom: 10px;
         }
 
-        .category-description {
-            font-size: 16px;
-            color: #6b7280;
-            line-height: 1.6;
-        }
-
-        .companies-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 24px;
-        }
-
-        .company-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-            padding: 32px;
-            text-decoration: none;
-            color: inherit;
-            transition: all 0.3s ease;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            display: block;
-        }
-
-        .company-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
-        }
-
-        .company-header {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 20px;
-        }
-
-        .company-logo {
-            font-size: 24px;
-            width: 50px;
-            text-align: center;
-        }
-
-        .company-info h3 {
-            font-size: 18px;
-            font-weight: 600;
-            color: #1f2937;
-            margin-bottom: 4px;
-        }
-
-        .company-info p {
-            font-size: 14px;
-            color: #6b7280;
-        }
-
-        .payment-fields {
-            margin-bottom: 24px;
-        }
-
-        .fields-label {
-            font-size: 12px;
-            font-weight: 600;
-            color: #9ca3af;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .fields-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .field-tag {
-            background: rgba(255, 153, 153, 0.1);
-            color: #ff6b6b;
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 500;
-        }
-
-        .pay-button {
-            width: 100%;
-            background: linear-gradient(135deg, var(--category-color) 0%, var(--category-color) 100%);
-            color: white;
-            border: none;
-            padding: 16px 24px;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .pay-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 10px;
-            }
-
-            .header,
-            .category-header {
-                padding: 24px;
-            }
-
-            .companies-grid {
-                grid-template-columns: 1fr;
-                gap: 16px;
-            }
-
-            .company-card {
-                padding: 24px;
-            }
-        }
     </style>
 </head>
-<body>
-    <div class="container">
-        <a href="{{ route('payment.index') }}" class="back-btn">
-            <i class="fas fa-arrow-left"></i>
-            Back to Payments
-        </a>
-
-        <div class="header">
-            <h1>
-                <i class="{{ $category['icon'] }}"></i>
-                {{ $category['name'] }}
-            </h1>
-            <p>{{ $category['description'] }}</p>
-        </div>
-
-        <div class="category-header" style="--category-color: {{ $category['color'] }}">
-            <div class="category-icon-large">
-                <i class="{{ $category['icon'] }}"></i>
+<body class="category-{{ $category['slug'] }}">
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <div class="logo-section">
+                <div class="logo-icon">
+                    <i class="fas fa-piggy-bank"></i>
+                </div>
+                <span class="brand-name">PIGGY</span>
             </div>
-            <h1 class="category-title">{{ $category['name'] }}</h1>
-            <p class="category-description">{{ $category['description'] }}</p>
+            <a href="{{ route('payment.index') }}" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                Back to Payments
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="breadcrumb">
+                <a href="{{ route('payment.index') }}">Payments</a>
+                <i class="fas fa-chevron-right"></i>
+                <span>{{ $category['name'] }}</span>
+            </div>
+            <div class="page-title-section">
+                <div class="category-icon-large">
+                    <i class="{{ $category['icon'] }}"></i>
+                </div>
+                <div class="category-info">
+                    <h1 class="page-title">{{ $category['name'] }}</h1>
+                    <p class="category-description">{{ $category['description'] }}</p>
+                </div>
+            </div>
         </div>
 
+        <!-- Companies Grid -->
         <div class="companies-grid">
             @foreach($category['companies'] as $company)
-            <a href="{{ route('payment.company', [$category['slug'], $company['slug']]) }}" 
-               class="company-card" 
-               style="--category-color: {{ $category['color'] }}">
+            <div class="company-card">
                 <div class="company-header">
                     <div class="company-logo">{{ $company['logo'] }}</div>
                     <div class="company-info">
-                        <h3>{{ $company['name'] }}</h3>
-                        <p>{{ $company['description'] }}</p>
+                        <h3 class="company-name">{{ $company['name'] }}</h3>
+                        <p class="company-description">{{ $company['description'] }}</p>
                     </div>
                 </div>
                 
                 <div class="payment-fields">
-                    <div class="fields-label">Required Information</div>
-                    <div class="fields-list">
-                        @foreach($company['fields'] as $field)
-                        <span class="field-tag">{{ $field }}</span>
-                        @endforeach
-                    </div>
+                    @foreach($company['fields'] as $field)
+                    <span class="field-tag">{{ $field }}</span>
+                    @endforeach
                 </div>
                 
-                <button class="pay-button">
-                    <i class="fas fa-credit-card"></i> Pay Now
-                </button>
-            </a>
+                <a href="{{ route('payment.company', [$category['slug'], $company['slug']]) }}" class="pay-button">
+                    Pay Now
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
             @endforeach
         </div>
     </div>

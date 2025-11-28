@@ -26,7 +26,7 @@ class PaymentRequest extends FormRequest
             // Common payment fields
             'amount' => 'required|numeric|min:1|max:1000000',
             'customer_name' => 'required|string|min:2|max:255|regex:/^[a-zA-Z\s\-\.]+$/',
-            'category_slug' => 'required|string|exists:payment_categories,slug',
+            'category_slug' => 'required|string',
             'company_slug' => 'required|string',
         ];
 
@@ -92,7 +92,6 @@ class PaymentRequest extends FormRequest
 
             // Category and company messages
             'category_slug.required' => 'Payment category is required.',
-            'category_slug.exists' => 'Selected payment category is invalid.',
             'company_slug.required' => 'Payment company is required.',
 
             // Card payment messages
