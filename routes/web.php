@@ -147,6 +147,9 @@ Route::middleware(['auth'])->group(function () {
     // Account Dashboard
     Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
     Route::get('/account/transactions', [\App\Http\Controllers\DashboardController::class, 'transactions'])->name('account.transactions');
+    
+    // Send Money Routes
+    Route::get('/send-money', [\App\Http\Controllers\DashboardController::class, 'showSendMoneyPage'])->name('send-money.index');
     Route::post('/account/send-money', [\App\Http\Controllers\DashboardController::class, 'sendMoney'])->name('account.send-money');
     
     // Account Lookup APIs

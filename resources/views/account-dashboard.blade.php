@@ -7,6 +7,7 @@
     <title>{{ $user->first_name }}'s Dashboard - PIGGY Bank</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('css/confirmation-modal.css') }}">
     <style>
         * {
             margin: 0;
@@ -522,24 +523,65 @@
         .modal-content {
             background: white;
             border-radius: 20px;
-            padding: 32px;
+            padding: 0;
             width: 100%;
             max-width: 500px;
             margin: 20px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            max-height: 85vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 24px;
+            padding: 24px 32px;
+            border-bottom: 1px solid #f0f0f0;
+            flex-shrink: 0;
+            background: white;
+            border-radius: 20px 20px 0 0;
         }
 
         .modal-title {
             font-size: 20px;
             font-weight: 600;
             color: #2d3748;
+        }
+
+        .modal-body {
+            padding: 32px;
+            overflow-y: auto;
+            flex: 1;
+            min-height: 0;
+            scroll-behavior: smooth;
+        }
+
+        /* Custom scrollbar for modal */
+        .modal-body::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .modal-body::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .modal-body::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+
+        .modal-body::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+
+        /* Firefox scrollbar */
+        .modal-body {
+            scrollbar-width: thin;
+            scrollbar-color: #c1c1c1 #f1f1f1;
         }
 
         .close-btn {
@@ -765,6 +807,36 @@
             .user-info {
                 display: none;
             }
+
+            /* Modal responsive styles */
+            .modal-content {
+                max-height: 95vh;
+                margin: 10px;
+                border-radius: 16px;
+            }
+
+            .modal-header {
+                padding: 16px 20px;
+                border-radius: 16px 16px 0 0;
+            }
+
+            .modal-body {
+                padding: 20px;
+            }
+
+            .modal-title {
+                font-size: 18px;
+            }
+
+            /* Mobile scrollbar styling */
+            .modal-body::-webkit-scrollbar {
+                width: 4px;
+            }
+
+            /* Touch scroll momentum */
+            .modal-body {
+                -webkit-overflow-scrolling: touch;
+            }
         }
 
         @keyframes fadeIn {
@@ -850,10 +922,10 @@
                         <i class="fas fa-university"></i>
                         Bank Transfer
                     </a>
-                    <button class="action-btn btn-send-money" onclick="openModal('sendMoneyModal')">
+                    <a href="{{ route('send-money.index') }}" class="action-btn btn-send-money">
                         <i class="fas fa-paper-plane"></i>
                         Send Money
-                    </button>
+                    </a>
                     <a href="{{ route('payment.index') }}" class="action-btn btn-payments">
                         <i class="fas fa-credit-card"></i>
                         Pay Bills
@@ -928,306 +1000,6 @@
         </div>
     </main>
 
-    <!-- Send Money Modal -->
-    <div id="sendMoneyModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">
-                    <i class="fas fa-paper-plane"></i>
-                    Send Money
-                </h3>
-                <button class="close-btn" onclick="closeModal('sendMoneyModal')">&times;</button>
-            </div>
-            
-            <form method="POST" action="{{ route('account.send-money') }}">
-                @csrf
-                <div class="form-group">
-                    <label for="recipient_account" class="form-label">
-                        <i class="fas fa-user"></i>
-                        Recipient Account Number
-                    </label>
-                    <div class="account-input-container">
-                        <input type="text" id="recipient_account" name="recipient_account" class="form-input" 
-                               placeholder="Enter account number (e.g., PIGGY123456)" 
-                               pattern="PIGGY[0-9]{6}" 
-                               title="Account number must be in format PIGGY123456"
-                               autocomplete="off"
-                               required>
-                        <div class="account-validation" id="accountValidation">
-                            <i class="fas fa-spinner fa-spin validation-icon" style="display: none;"></i>
-                        </div>
-                    </div>
-                    <div class="account-info" id="accountInfo" style="display: none;"></div>
-                    <small class="input-hint">Enter the recipient's PIGGY account number</small>
-                </div>
-                
-                <div class="form-group">
-                    <label for="send_amount" class="form-label">
-                        <i class="fas fa-peso-sign"></i>
-                        Amount
-                    </label>
-                    <input type="number" id="send_amount" name="amount" class="form-input" 
-                           placeholder="0.00" min="1" max="{{ $account->balance }}" step="0.01" required>
-                    <small class="input-hint">Available balance: ₱{{ number_format($account->balance, 2) }}</small>
-                </div>
-                
-                <div class="form-group">
-                    <label for="send_description" class="form-label">
-                        <i class="fas fa-comment"></i>
-                        Message (Optional)
-                    </label>
-                    <input type="text" id="send_description" name="description" class="form-input" 
-                           placeholder="What's this transfer for?" maxlength="100">
-                    <small class="input-hint">Add a message for the recipient</small>
-                </div>
 
-                <div class="transfer-summary" id="transferSummary" style="display: none;">
-                    <h4>Transfer Summary</h4>
-                    <div class="summary-item">
-                        <span>From:</span>
-                        <span>{{ $account->account_number }} (You)</span>
-                    </div>
-                    <div class="summary-item">
-                        <span>To:</span>
-                        <span id="summaryRecipient">-</span>
-                    </div>
-                    <div class="summary-item">
-                        <span>Amount:</span>
-                        <span id="summaryAmount">₱0.00</span>
-                    </div>
-                    <div class="summary-item">
-                        <span>Your balance after:</span>
-                        <span id="summaryBalance">₱{{ number_format($account->balance, 2) }}</span>
-                    </div>
-                </div>
-                
-                <button type="submit" class="form-submit">
-                    <i class="fas fa-paper-plane"></i>
-                    Send Money
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <script>
-        function openModal(modalId) {
-            document.getElementById(modalId).classList.add('show');
-            
-            // If opening send money modal, setup the form listeners
-            if (modalId === 'sendMoneyModal') {
-                setupSendMoneyForm();
-            }
-        }
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('show');
-            
-            // Reset form if closing send money modal
-            if (modalId === 'sendMoneyModal') {
-                resetSendMoneyForm();
-            }
-        }
-
-        // Close modal when clicking outside
-        window.onclick = function(event) {
-            if (event.target.classList.contains('modal')) {
-                event.target.classList.remove('show');
-            }
-        }
-
-        // Close modal with Escape key
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape') {
-                const modals = document.querySelectorAll('.modal.show');
-                modals.forEach(modal => modal.classList.remove('show'));
-            }
-        });
-
-        // Send Money Form Functions
-        function setupSendMoneyForm() {
-            const recipientInput = document.getElementById('recipient_account');
-            const amountInput = document.getElementById('send_amount');
-            const summaryDiv = document.getElementById('transferSummary');
-            let validationTimeout;
-            
-
-            
-            // Add event listeners for real-time updates
-            recipientInput.addEventListener('input', function(e) {
-                // Format account number input
-                let value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
-                if (value.length > 6 && !value.startsWith('PIGGY')) {
-                    value = 'PIGGY' + value.substring(5, 11);
-                }
-                e.target.value = value;
-                
-                // Clear previous validation timeout
-                clearTimeout(validationTimeout);
-                
-
-                
-                // Validate account after delay
-                if (value.length >= 11) { // PIGGY + 6 digits
-                    showValidationSpinner();
-                    validationTimeout = setTimeout(() => validateAccount(value), 500);
-                } else {
-                    hideAccountValidation();
-                }
-                
-                updateTransferSummary();
-            });
-            
-            recipientInput.addEventListener('focus', function() {
-                if (!this.value) {
-                    showSuggestions();
-                }
-            });
-            
-            amountInput.addEventListener('input', updateTransferSummary);
-        }
-
-
-
-
-
-        function selectRecipient(accountNumber) {
-            document.getElementById('recipient_account').value = accountNumber;
-            validateAccount(accountNumber);
-            updateTransferSummary();
-        }
-
-
-
-        function validateAccount(accountNumber) {
-            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || 
-                            document.querySelector('input[name="_token"]')?.value;
-                            
-            fetch('/api/account/lookup', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken
-                },
-                body: JSON.stringify({ account_number: accountNumber })
-            })
-            .then(response => response.json())
-            .then(data => {
-                const accountInfo = document.getElementById('accountInfo');
-                const validationIcon = document.getElementById('accountValidation').querySelector('.validation-icon');
-                
-                hideValidationSpinner();
-                
-                if (data.success) {
-                    // Show success
-                    validationIcon.className = 'fas fa-check-circle validation-icon validation-success';
-                    validationIcon.style.display = 'block';
-                    
-                    // Show account info
-                    accountInfo.innerHTML = `
-                        <h6><i class="fas fa-user-check"></i> Account Found</h6>
-                        <p><strong>${data.account.account_holder}</strong> • ${data.account.account_type} Account</p>
-                    `;
-                    accountInfo.className = 'account-info';
-                    accountInfo.style.display = 'block';
-                } else {
-                    // Show error
-                    validationIcon.className = 'fas fa-exclamation-circle validation-icon validation-error';
-                    validationIcon.style.display = 'block';
-                    
-                    // Show error info
-                    const errorMessages = {
-                        'not_found': 'Account not found in our system',
-                        'inactive': 'This account is inactive and cannot receive transfers',
-                        'self_transfer': 'Cannot send money to your own account'
-                    };
-                    
-                    accountInfo.innerHTML = `
-                        <h6><i class="fas fa-exclamation-triangle"></i> ${data.error_type === 'not_found' ? 'Account Not Found' : 'Transfer Not Allowed'}</h6>
-                        <p>${errorMessages[data.error_type] || data.message}</p>
-                    `;
-                    accountInfo.className = 'account-info error';
-                    accountInfo.style.display = 'block';
-                }
-            })
-            .catch(error => {
-                console.error('Account validation error:', error);
-                hideValidationSpinner();
-                showValidationError('Unable to validate account. Please try again.');
-            });
-        }
-
-        function showValidationSpinner() {
-            const validationIcon = document.getElementById('accountValidation').querySelector('.validation-icon');
-            validationIcon.className = 'fas fa-spinner fa-spin validation-icon';
-            validationIcon.style.display = 'block';
-            document.getElementById('accountInfo').style.display = 'none';
-        }
-
-        function hideValidationSpinner() {
-            const validationIcon = document.getElementById('accountValidation').querySelector('.validation-icon');
-            validationIcon.style.display = 'none';
-        }
-
-        function hideAccountValidation() {
-            document.getElementById('accountValidation').querySelector('.validation-icon').style.display = 'none';
-            document.getElementById('accountInfo').style.display = 'none';
-        }
-
-        function showValidationError(message) {
-            const accountInfo = document.getElementById('accountInfo');
-            accountInfo.innerHTML = `
-                <h6><i class="fas fa-exclamation-triangle"></i> Validation Error</h6>
-                <p>${message}</p>
-            `;
-            accountInfo.className = 'account-info error';
-            accountInfo.style.display = 'block';
-        }
-
-        function updateTransferSummary() {
-            const recipientAccount = document.getElementById('recipient_account').value;
-            const amount = parseFloat(document.getElementById('send_amount').value) || 0;
-            const currentBalance = {{ $account->balance }};
-            const summaryDiv = document.getElementById('transferSummary');
-            
-            // Show/hide summary based on whether we have both values
-            if (recipientAccount && amount > 0) {
-                summaryDiv.style.display = 'block';
-                
-                // Update summary values
-                document.getElementById('summaryRecipient').textContent = recipientAccount;
-                document.getElementById('summaryAmount').textContent = '₱' + amount.toLocaleString('en-US', {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                });
-                
-                const balanceAfter = currentBalance - amount;
-                document.getElementById('summaryBalance').textContent = '₱' + balanceAfter.toLocaleString('en-US', {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                });
-                
-                // Add warning if insufficient funds
-                const balanceSpan = document.getElementById('summaryBalance');
-                if (balanceAfter < 0) {
-                    balanceSpan.style.color = '#dc2626';
-                    balanceSpan.textContent += ' (Insufficient Funds)';
-                } else {
-                    balanceSpan.style.color = '#374151';
-                }
-            } else {
-                summaryDiv.style.display = 'none';
-            }
-        }
-
-        function resetSendMoneyForm() {
-            document.getElementById('recipient_account').value = '';
-            document.getElementById('send_amount').value = '';
-            document.getElementById('send_description').value = '';
-            document.getElementById('transferSummary').style.display = 'none';
-            
-            // Reset validation states
-            hideAccountValidation();
-        }
-    </script>
 </body>
 </html>

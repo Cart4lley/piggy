@@ -6,6 +6,7 @@
   <title>Create Account - PIGGY Bank</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&family=Lalezar&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="{{ asset('css/validation.css') }}">
   <meta name="csrf-token" content="{{ csrf_token() }}">
 
   <style>
@@ -874,7 +875,9 @@
                     <input type="text" class="form-input has-icon" id="first_name" name="first_name" 
                            value="{{ old('first_name') }}" placeholder="Juan" required>
                   </div>
-                  <div class="error-message" id="first-name-error"></div>
+                  <div class="invalid-feedback" id="first-name-error">
+                    @error('first_name'){{ $message }}@enderror
+                  </div>
                 </div>
                 <div class="form-group">
                   <label class="form-label" for="last_name">Last Name <span class="required">*</span></label>
@@ -883,7 +886,9 @@
                     <input type="text" class="form-input has-icon" id="last_name" name="last_name" 
                            value="{{ old('last_name') }}" placeholder="Dela Cruz" required>
                   </div>
-                  <div class="error-message" id="last-name-error"></div>
+                  <div class="invalid-feedback" id="last-name-error">
+                    @error('last_name'){{ $message }}@enderror
+                  </div>
                 </div>
               </div>
 
@@ -895,7 +900,9 @@
                     <input type="date" class="form-input has-icon" id="date_of_birth" name="date_of_birth" 
                            value="{{ old('date_of_birth') }}" required>
                   </div>
-                  <div class="error-message" id="dob-error"></div>
+                  <div class="invalid-feedback" id="dob-error">
+                    @error('date_of_birth'){{ $message }}@enderror
+                  </div>
                 </div>
                 <div class="form-group">
                   <label class="form-label" for="gender">Gender</label>
@@ -930,7 +937,9 @@
                   <input type="email" class="form-input has-icon" id="email" name="email" 
                          value="{{ old('email') }}" placeholder="juan.delacruz@gmail.com" required>
                 </div>
-                <div class="error-message" id="email-error"></div>
+                <div class="invalid-feedback" id="email-error">
+                  @error('email'){{ $message }}@enderror
+                </div>
               </div>
 
               <div class="form-group">
@@ -940,7 +949,9 @@
                   <input type="tel" class="form-input has-icon" id="phone" name="phone" 
                          value="{{ old('phone') }}" placeholder="+63 912 345 6789" required>
                 </div>
-                <div class="error-message" id="phone-error"></div>
+                <div class="invalid-feedback" id="phone-error">
+                  @error('phone'){{ $message }}@enderror
+                </div>
               </div>
 
               <div class="form-group">
@@ -1017,7 +1028,9 @@
                     <input type="number" class="form-input has-icon" id="monthly_income" name="monthly_income" 
                            value="{{ old('monthly_income') }}" min="0" max="10000000" step="0.01" placeholder="25000.00" required>
                   </div>
-                  <div class="error-message" id="income-error"></div>
+                  <div class="invalid-feedback" id="income-error">
+                    @error('monthly_income'){{ $message }}@enderror
+                  </div>
                 </div>
               </div>
 
@@ -1050,7 +1063,9 @@
                   <input type="text" class="form-input has-icon" id="username" name="username" 
                          value="{{ old('username') }}" placeholder="jdelacruz123" required>
                 </div>
-                <div class="error-message" id="username-error"></div>
+                <div class="invalid-feedback" id="username-error">
+                  @error('username'){{ $message }}@enderror
+                </div>
               </div>
 
               <div class="form-group">
@@ -1066,7 +1081,9 @@
                   <div class="strength-bar" id="strength-bar"></div>
                 </div>
                 <div class="password-strength-text" id="strength-text"></div>
-                <div class="error-message" id="password-error"></div>
+                <div class="invalid-feedback" id="password-error">
+                  @error('password'){{ $message }}@enderror
+                </div>
               </div>
 
               <div class="form-group">
@@ -1078,7 +1095,9 @@
                     <i class="fas fa-eye" id="password_confirmation-toggle-icon"></i>
                   </button>
                 </div>
-                <div class="error-message" id="confirm-password-error"></div>
+                <div class="invalid-feedback" id="confirm-password-error">
+                  @error('password_confirmation'){{ $message }}@enderror
+                </div>
               </div>
             </div>
 
@@ -1294,6 +1313,74 @@
 
     // Initialize progress
     updateProgress();
+  </script>
+  
+  <!-- Validation JavaScript -->
+  <script src="{{ asset('js/validation.js') }}"></script>
+  <script>
+    // Initialize PIGGY validation for registration form
+    document.addEventListener('DOMContentLoaded', function() {
+      const validator = new PIGGYValidator();
+      const registrationForm = document.querySelector('form');
+      
+      if (registrationForm) {
+        // Add validation attributes
+        const phoneField = document.getElementById('phone');
+        if (phoneField) {
+          phoneField.setAttribute('data-validate', 'phone');
+          phoneField.classList.add('phone-input');
+        }
+        
+        const emailField = document.getElementById('email');
+        if (emailField) {
+          emailField.setAttribute('data-validate', 'email');
+        }
+        
+        const passwordField = document.getElementById('password');
+        if (passwordField) {
+          passwordField.setAttribute('data-validate', 'password');
+          passwordField.setAttribute('data-strength', 'true');
+        }
+        
+        const confirmPasswordField = document.getElementById('password_confirmation');
+        if (confirmPasswordField) {
+          confirmPasswordField.setAttribute('data-validate', 'required');
+          confirmPasswordField.setAttribute('data-match', 'password');
+        }
+        
+        const firstNameField = document.getElementById('first_name');
+        if (firstNameField) {
+          firstNameField.setAttribute('data-validate', 'required|min:2|max:50|alpha_spaces');
+        }
+        
+        const lastNameField = document.getElementById('last_name');
+        if (lastNameField) {
+          lastNameField.setAttribute('data-validate', 'required|min:2|max:50|alpha_spaces');
+        }
+        
+        const incomeField = document.getElementById('monthly_income');
+        if (incomeField) {
+          incomeField.setAttribute('data-validate', 'required|min:1|max:9999999');
+          incomeField.classList.add('amount-input');
+        }
+        
+        const usernameField = document.getElementById('username');
+        if (usernameField) {
+          usernameField.setAttribute('data-validate', 'required|min:3|max:20|username');
+        }
+        
+        // Initialize real-time validation
+        validator.initializeForm(registrationForm);
+        
+        // Add form submission validation
+        registrationForm.addEventListener('submit', function(e) {
+          if (!validator.validateForm(registrationForm)) {
+            e.preventDefault();
+            return false;
+          }
+        });
+      }
+    });
   </script>
 </body>
 </html>

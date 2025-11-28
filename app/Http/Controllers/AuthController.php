@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Validator;
 use App\Notifications\PendingRegistrationVerification;
+use App\Http\Requests\StoreUserRequest;
 
 class AuthController extends Controller
 {
@@ -31,66 +32,12 @@ class AuthController extends Controller
     }
 
     /**
-     * Handle user registration (create pending registration)
+     * Handle user registration using comprehensive form validation
      */
-    public function register(Request $request)
+    public function register(StoreUserRequest $request)
     {
-        // Validate the request
-        $validator = Validator::make($request->all(), [
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'phone' => 'required|string|max:20',
-            'date_of_birth' => 'required|date|before:today|after:1900-01-01',
-            'gender' => 'nullable|in:male,female,other,prefer-not-to-say',
-            'address' => 'required|string|max:500',
-            'city' => 'required|string|max:100',
-            'zip_code' => 'required|string|max:10',
-            'occupation' => 'required|string|max:100',
-            'employment_status' => 'required|in:employed,self-employed,student,unemployed,retired',
-            'monthly_income' => 'required|numeric|min:0|max:10000000',
-            'employer_name' => 'nullable|string|max:255',
-            'username' => 'required|string|min:3|max:50|unique:users,name',
-            'password' => 'required|string|min:8|confirmed|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/',
-            'terms_agreement' => 'required|accepted',
-            'age_verification' => 'required|accepted',
-            'marketing_consent' => 'nullable',
-        ], [
-            'first_name.required' => 'First name is required.',
-            'last_name.required' => 'Last name is required.',
-            'email.required' => 'Email address is required.',
-            'email.email' => 'Please enter a valid email address.',
-            'email.unique' => 'This email address is already registered.',
-            'phone.required' => 'Phone number is required.',
-            'date_of_birth.required' => 'Date of birth is required.',
-            'date_of_birth.before' => 'You must be at least 18 years old.',
-            'date_of_birth.after' => 'Please enter a valid birth date.',
-            'address.required' => 'Home address is required.',
-            'city.required' => 'City is required.',
-            'zip_code.required' => 'ZIP code is required.',
-            'occupation.required' => 'Occupation is required.',
-            'employment_status.required' => 'Employment status is required.',
-            'monthly_income.required' => 'Monthly income is required.',
-            'monthly_income.min' => 'Monthly income cannot be negative.',
-            'monthly_income.max' => 'Monthly income seems unusually high.',
-            'username.required' => 'Username is required.',
-            'username.min' => 'Username must be at least 3 characters.',
-            'username.unique' => 'This username is already taken.',
-            'password.required' => 'Password is required.',
-            'password.min' => 'Password must be at least 8 characters.',
-            'password.confirmed' => 'Password confirmation does not match.',
-            'password.regex' => 'Password must contain at least one uppercase letter, one lowercase letter, and one number.',
-            'terms_agreement.required' => 'You must agree to the Terms & Conditions.',
-            'terms_agreement.accepted' => 'You must agree to the Terms & Conditions.',
-            'age_verification.required' => 'You must verify that you are at least 18 years old.',
-            'age_verification.accepted' => 'You must verify that you are at least 18 years old.',
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
+        // The validation is handled automatically by StoreUserRequest
+        // All data has been cleaned and validated
 
         // Handle checkbox values (checkboxes don't send anything when unchecked)
         $marketingConsent = $request->has('marketing_consent') ? true : false;

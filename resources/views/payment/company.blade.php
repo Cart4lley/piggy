@@ -7,6 +7,7 @@
     <title>{{ $company['name'] }} Payment - PIGGY</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lalezar&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('css/toast.css') }}">
     <style>
         * {
             margin: 0;
@@ -700,27 +701,20 @@
                 e.preventDefault();
                 
                 const amount = parseFloat(amountInput.value) || 0;
-                const errorMessage = document.getElementById('errorMessage');
-                
-                // Clear previous errors
-                errorMessage.style.display = 'none';
                 
                 // Validate amount
                 if (amount <= 0) {
-                    errorMessage.textContent = 'Please enter a valid payment amount.';
-                    errorMessage.style.display = 'block';
+                    PIGGYToast.error('Invalid Amount', 'Please enter a valid payment amount.');
                     return;
                 }
                 
                 if (amount > currentBalance) {
-                    errorMessage.textContent = 'Insufficient balance for this payment.';
-                    errorMessage.style.display = 'block';
+                    PIGGYToast.error('Insufficient Balance', 'You don\'t have enough balance for this payment.');
                     return;
                 }
 
-                // Show loading state
-                document.querySelector('.payment-form').style.display = 'none';
-                document.getElementById('loadingState').style.display = 'block';
+                // Show loading toast
+                const loadingToast = PIGGYToast.loading('Processing Payment', 'Please wait while we process your payment...');
 
                 // Prepare form data
                 const formData = new FormData(form);
@@ -736,30 +730,35 @@
                 })
                 .then(response => response.json())
                 .then(data => {
-                    document.getElementById('loadingState').style.display = 'none';
+                    // Hide loading toast
+                    PIGGYToast.hide(loadingToast);
                     
                     if (data.success) {
-                        document.getElementById('successState').style.display = 'block';
+                        PIGGYToast.success('Payment Successful!', `₱${amount.toFixed(2)} has been paid to ${data.company_name || '{{ $company["name"] }}'}.`);
+                        
                         // Update balance display
                         document.getElementById('currentBalance').textContent = '₱' + data.new_balance.toLocaleString('en-US', {
                             minimumFractionDigits: 2,
                             maximumFractionDigits: 2
                         });
+                        
+                        // Show success state after a short delay
+                        setTimeout(() => {
+                            document.querySelector('.payment-form').style.display = 'none';
+                            document.getElementById('successState').style.display = 'block';
+                        }, 1000);
                     } else {
-                        document.querySelector('.payment-form').style.display = 'block';
-                        errorMessage.textContent = data.message || 'Payment failed. Please try again.';
-                        errorMessage.style.display = 'block';
+                        PIGGYToast.error('Payment Failed', data.message || 'Unable to process payment. Please try again.');
                     }
                 })
                 .catch(error => {
                     console.error('Payment error:', error);
-                    document.getElementById('loadingState').style.display = 'none';
-                    document.querySelector('.payment-form').style.display = 'block';
-                    errorMessage.textContent = 'Network error. Please check your connection and try again.';
-                    errorMessage.style.display = 'block';
+                    PIGGYToast.hide(loadingToast);
+                    PIGGYToast.error('Network Error', 'Unable to connect to server. Please check your internet connection.');
                 });
             });
         });
     </script>
+    <script src="{{ asset('js/toast.js') }}"></script>
 </body>
 </html>

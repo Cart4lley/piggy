@@ -8,6 +8,7 @@
   <!-- Lalezar font -->
   <link href="https://fonts.googleapis.com/css2?family=Lalezar&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="{{ asset('css/validation.css') }}">
 
   <style>
     /* ---- Global Reset ---- */
@@ -393,5 +394,17 @@
       </div>
     </div>
   </div>
+  
+  <!-- Validation JavaScript -->
+  <script src="{{ asset('js/validation.js') }}"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const validator = new PIGGYValidator();
+      // Initialize validation for any forms that may be added to dashboard
+      document.querySelectorAll('form').forEach(form => {
+        validator.initializeForm(form);
+      });
+    });
+  </script>
 </body>
 </html>

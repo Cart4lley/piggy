@@ -6,9 +6,25 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Account;
 use App\Models\Transaction;
+use App\Http\Requests\TransactionRequest;
 
 class DashboardController extends Controller
 {
+    /**
+     * Show the send money page
+     */
+    public function showSendMoneyPage()
+    {
+        $user = Auth::user();
+        $account = $user->account;
+
+        if (!$account) {
+            return redirect()->route('dashboard')->with('error', 'No account found.');
+        }
+
+        return view('send-money', compact('user', 'account'));
+    }
+
     /**
      * Show the user dashboard with account details
      */
@@ -76,13 +92,9 @@ class DashboardController extends Controller
     /**
      * Send money to another account
      */
-    public function sendMoney(Request $request)
+    public function sendMoney(TransactionRequest $request)
     {
-        $request->validate([
-            'recipient_account' => 'required|string|exists:accounts,account_number',
-            'amount' => 'required|numeric|min:1|max:1000000',
-            'description' => 'nullable|string|max:255'
-        ]);
+        // Validation is handled by TransactionRequest
 
         $user = Auth::user();
         $senderAccount = $user->account;

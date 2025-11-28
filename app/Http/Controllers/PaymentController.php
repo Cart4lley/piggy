@@ -7,6 +7,7 @@ use App\Models\Account;
 use App\Models\Transaction;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Http\Requests\PaymentRequest;
 
 class PaymentController extends Controller
 {
@@ -60,15 +61,9 @@ class PaymentController extends Controller
         return view('payment.company', compact('user', 'account', 'category', 'company'));
     }
 
-    public function processPayment(Request $request)
+    public function processPayment(PaymentRequest $request)
     {
-        $request->validate([
-            'category_slug' => 'required|string',
-            'company_slug' => 'required|string', 
-            'amount' => 'required|numeric|min:1',
-            'account_number' => 'required|string',
-            'customer_name' => 'required|string|max:255',
-        ]);
+        // Validation is handled by PaymentRequest
 
         $user = Auth::user();
         $account = $user->account;

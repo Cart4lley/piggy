@@ -8,6 +8,7 @@
   <!-- Modern fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="{{ asset('css/validation.css') }}">
 
   <style>
     * {
@@ -610,6 +611,9 @@
             <input type="email" id="email" name="email" class="form-input" 
                    value="{{ old('email') }}" 
                    placeholder="Enter your email" required>
+            <div class="invalid-feedback" id="email-error">
+              @error('email'){{ $message }}@enderror
+            </div>
           </div>
 
           <div class="form-group">
@@ -621,6 +625,9 @@
               <button type="button" class="password-toggle-btn" onclick="togglePassword()">
                 <i class="fas fa-eye" id="toggle-icon"></i>
               </button>
+            </div>
+            <div class="invalid-feedback" id="password-error">
+              @error('password'){{ $message }}@enderror
             </div>
           </div>
 
@@ -676,6 +683,39 @@
         toggleIcon.classList.add('fa-eye');
       }
     }
+  </script>
+  
+  <!-- Validation JavaScript -->
+  <script src="{{ asset('js/validation.js') }}"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const validator = new PIGGYValidator();
+      const loginForm = document.querySelector('form');
+      
+      if (loginForm) {
+        // Add validation attributes
+        const emailField = document.querySelector('input[name="email"]');
+        if (emailField) {
+          emailField.setAttribute('data-validate', 'required|email');
+        }
+        
+        const passwordField = document.querySelector('input[name="password"]');
+        if (passwordField) {
+          passwordField.setAttribute('data-validate', 'required|min:6');
+        }
+        
+        // Initialize validation
+        validator.initializeForm(loginForm);
+        
+        // Form submission validation
+        loginForm.addEventListener('submit', function(e) {
+          if (!validator.validateForm(loginForm)) {
+            e.preventDefault();
+            return false;
+          }
+        });
+      }
+    });
   </script>
 </body>
 </html>

@@ -8,6 +8,8 @@
   <!-- Lalezar font -->
   <link href="https://fonts.googleapis.com/css2?family=Lalezar&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="{{ asset('css/validation.css') }}">
+  <link rel="stylesheet" href="{{ asset('css/confirmation-modal.css') }}">
 
   <style>
     /* ---- Global Reset ---- */
@@ -800,7 +802,10 @@
               </div>
               <div class="form-group">
                 <label>Mobile Number</label>
-                <input type="tel" id="mobile-number" placeholder="+63 912 345 6789">
+                <input type="tel" id="mobile-number" name="mobile_number" placeholder="+63 912 345 6789">
+                <div class="invalid-feedback" id="mobile-number-error">
+                  @error('mobile_number'){{ $message }}@enderror
+                </div>
               </div>
             </div>
 
@@ -811,12 +816,18 @@
                 <label>Amount (PHP)</label>
                 <div class="amount-input-container">
                   <span class="currency-symbol">₱</span>
-                  <input type="number" id="amount" placeholder="0.00" step="0.01" min="1">
+                  <input type="number" id="amount" name="amount" placeholder="0.00" step="0.01" min="1">
+                </div>
+                <div class="invalid-feedback" id="amount-error">
+                  @error('amount'){{ $message }}@enderror
                 </div>
               </div>
               <div class="form-group">
                 <label>Payment Description</label>
-                <input type="text" id="description" placeholder="What is this payment for?">
+                <input type="text" id="description" name="description" placeholder="What is this payment for?">
+                <div class="invalid-feedback" id="description-error">
+                  @error('description'){{ $message }}@enderror
+                </div>
               </div>
             </div>
 
@@ -852,5 +863,182 @@
       </div>
     </div>
   </div>
+  
+  <!-- Validation JavaScript -->
+  <script src="{{ asset('js/validation.js') }}"></script>
+  <script src="{{ asset('js/confirmation-modal.js') }}"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const validator = new PIGGYValidator();
+      const paymentForm = document.querySelector('form');
+      
+      if (paymentForm) {
+        // Add validation attributes
+        const amountField = document.getElementById('amount');
+        if (amountField) {
+          amountField.setAttribute('data-validate', 'required|min:1|max:999999|numeric');
+          amountField.classList.add('amount-input');
+        }
+        
+        const descriptionField = document.getElementById('description');
+        if (descriptionField) {
+          descriptionField.setAttribute('data-validate', 'required|min:5|max:255');
+        }
+        
+        const mobileField = document.getElementById('mobile-number');
+        if (mobileField) {
+          mobileField.setAttribute('data-validate', 'phone');
+          mobileField.classList.add('phone-input');
+        }
+        
+        // Card fields (if they exist)
+        const cardNumberField = document.getElementById('card-number');
+        if (cardNumberField) {
+          cardNumberField.setAttribute('data-validate', 'required|credit_card');
+          cardNumberField.classList.add('credit-card-input');
+        }
+        
+        const expiryField = document.getElementById('expiry');
+        if (expiryField) {
+          expiryField.setAttribute('data-validate', 'required|expiry_date');
+        }
+        
+        const cvvField = document.getElementById('cvv');
+        if (cvvField) {
+          cvvField.setAttribute('data-validate', 'required|cvv');
+        }
+        
+        // Initialize validation
+        validator.initializeForm(paymentForm);
+        
+        // Form submission with confirmation modal
+        paymentForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          
+          // First validate the form
+          if (!validator.validateForm(paymentForm)) {
+            return false;
+          }
+          
+          // Get form values for confirmation
+          const amount = document.getElementById('amount').value;
+          const description = document.getElementById('description').value;
+          const mobileNumber = document.getElementById('mobile-number') ? document.getElementById('mobile-number').value : null;
+          
+          // Determine payment method
+          let paymentMethod = 'Unknown';
+          let billerName = 'Bill Payment';
+          let accountNumber = 'N/A';
+          
+          // Check which payment method is selected
+          if (document.querySelector('input[name="payment_method"]:checked')) {
+            const selectedMethod = document.querySelector('input[name="payment_method"]:checked').value;
+            
+            switch (selectedMethod) {
+              case 'card':
+                paymentMethod = 'Credit/Debit Card';
+                const cardNumber = document.getElementById('card-number') ? document.getElementById('card-number').value : '';
+                accountNumber = cardNumber ? '**** **** **** ' + cardNumber.slice(-4) : 'N/A';
+                break;
+              case 'ewallet':
+                const selectedWallet = document.querySelector('input[name="ewallet"]:checked');
+                if (selectedWallet) {
+                  paymentMethod = selectedWallet.value === 'gcash' ? 'GCash' : 'PayMaya';
+                  accountNumber = mobileNumber || 'N/A';
+                }
+                break;
+              case 'bank':
+                paymentMethod = 'Bank Transfer';
+                break;
+              default:
+                paymentMethod = 'Online Payment';
+            }
+          }
+          
+          // Get biller info if available (you can customize this based on your form structure)
+          const billerSelect = document.getElementById('biller');
+          if (billerSelect && billerSelect.value) {
+            billerName = billerSelect.options[billerSelect.selectedIndex].text;
+          }
+          
+          const customerName = document.getElementById('customer_name') ? document.getElementById('customer_name').value : 'N/A';
+          
+          // Calculate fee
+          const paymentAmount = parseFloat(amount) || 0;
+          const fee = paymentAmount < 1000 ? 10 : Math.ceil(paymentAmount * 0.01); // 1% fee or minimum ₱10
+          
+          // Show confirmation modal
+          PIGGYTransactionConfirm.billPayment({
+            billerName: billerName,
+            accountNumber: accountNumber,
+            customerName: customerName,
+            amount: paymentAmount,
+            fee: fee,
+            description: description || 'Bill Payment'
+          }, function(pin) {
+            return new Promise((resolve, reject) => {
+              // Simulate PIN validation
+              if (pin && pin.length === 6) {
+                // Add PIN to form data
+                const pinInput = document.createElement('input');
+                pinInput.type = 'hidden';
+                pinInput.name = 'transaction_pin';
+                pinInput.value = pin;
+                paymentForm.appendChild(pinInput);
+                
+                // Simulate processing
+                setTimeout(() => {
+                  console.log('Processing payment...', {
+                    amount: paymentAmount,
+                    method: paymentMethod,
+                    biller: billerName,
+                    account: accountNumber,
+                    customer: customerName,
+                    description: description,
+                    fee: fee,
+                    pin: pin
+                  });
+                  
+                  showPaymentSuccess();
+                  resolve();
+                }, 2000);
+              } else {
+                reject(new Error('Invalid PIN'));
+              }
+            });
+          });
+        });
+        
+        function showPaymentSuccess() {
+          const successDiv = document.createElement('div');
+          successDiv.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #10b981;
+            color: white;
+            padding: 16px 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            z-index: 10000;
+            font-weight: 600;
+          `;
+          successDiv.innerHTML = '<i class="fas fa-check-circle"></i> Payment processed successfully!';
+          document.body.appendChild(successDiv);
+          
+          setTimeout(() => {
+            document.body.removeChild(successDiv);
+            paymentForm.reset();
+            
+            // Reset any dynamic form elements
+            const ewalletSection = document.getElementById('ewallet-section');
+            if (ewalletSection) {
+              ewalletSection.style.display = 'none';
+            }
+          }, 5000);
+        }
+      }
+    });
+  </script>
 </body>
 </html>
