@@ -19,7 +19,7 @@
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             background: linear-gradient(135deg, #ff9999 0%, #ffb3b3 50%, #ffc9c9 100%);
             min-height: 100vh;
-            color: #2d3748;
+            color: #4a5568;
         }
 
         /* Header/Navigation */
@@ -64,7 +64,7 @@
             font-family: 'Poppins', sans-serif;
             font-size: 24px;
             font-weight: 700;
-            color: #2d3748;
+            color: #4a5568;
         }
 
         .user-section {
@@ -95,7 +95,7 @@
         .user-details h3 {
             font-size: 16px;
             font-weight: 600;
-            color: #2d3748;
+            color: #4a5568;
         }
 
         .user-details p {
@@ -211,7 +211,7 @@
         .account-info h3 {
             font-size: 18px;
             font-weight: 600;
-            color: #2d3748;
+            color: #4a5568;
             margin-bottom: 4px;
         }
 
@@ -244,7 +244,7 @@
         .balance-amount {
             font-size: 36px;
             font-weight: 700;
-            color: #2d3748;
+            color: #4a5568;
             margin-bottom: 4px;
         }
 
@@ -335,7 +335,7 @@
         .stats-header h3 {
             font-size: 18px;
             font-weight: 600;
-            color: #2d3748;
+            color: #4a5568;
             margin-bottom: 24px;
         }
 
@@ -364,7 +364,7 @@
         .stat-value {
             font-size: 16px;
             font-weight: 600;
-            color: #2d3748;
+            color: #4a5568;
         }
 
         .stat-positive {
@@ -377,12 +377,17 @@
 
         /* Transactions Section */
         .transactions-section {
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.95) !important;
             backdrop-filter: blur(20px);
             border-radius: 20px;
             padding: 32px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
+            color-scheme: light !important;
+        }
+        
+        .transactions-section * {
+            color-scheme: light !important;
         }
 
         .transactions-header {
@@ -395,7 +400,7 @@
         .transactions-header h3 {
             font-size: 18px;
             font-weight: 600;
-            color: #2d3748;
+            color: #4a5568 !important;
         }
 
         .view-all-btn {
@@ -417,56 +422,87 @@
         .transactions-list {
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 12px;
+        }
+        
+        .transactions-list * {
+            color-scheme: light !important;
         }
 
         .transaction-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 16px 0;
-            border-bottom: 1px solid #e2e8f0;
+            padding: 18px 20px;
+            border: 2px solid transparent;
+            border-radius: 16px;
+            background: white !important;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            color-scheme: light;
         }
 
-        .transaction-item:last-child {
-            border-bottom: none;
+        .transaction-item:hover {
+            border-color: #FF9898;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 152, 152, 0.15);
         }
 
         .transaction-info {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 16px;
+            background: transparent !important;
+        }
+        
+        .transaction-info * {
+            color-scheme: light !important;
         }
 
         .transaction-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
+            font-size: 18px;
             color: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         .icon-deposit {
-            background: #16a34a;
+            background: linear-gradient(135deg, #10b981, #059669);
         }
 
         .icon-withdraw {
-            background: #dc2626;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
         }
 
+        .transaction-details {
+            background: transparent !important;
+        }
+        
         .transaction-details h4 {
-            font-size: 14px;
+            font-size: 15px;
             font-weight: 600;
-            color: #2d3748;
-            margin-bottom: 2px;
+            color: #4a5568 !important;
+            margin-bottom: 4px;
+            background: transparent !important;
         }
 
         .transaction-details p {
-            font-size: 12px;
-            color: #718096;
+            font-size: 13px;
+            color: #9ca3af !important;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: transparent !important;
+        }
+
+        .transaction-details p i {
+            font-size: 11px;
+            color: #9ca3af !important;
         }
 
         .transaction-amount {
@@ -474,30 +510,48 @@
         }
 
         .amount {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 2px;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 4px;
         }
 
         .amount-positive {
-            color: #16a34a;
+            color: #10b981 !important;
         }
 
         .amount-negative {
-            color: #dc2626;
+            color: #ef4444 !important;
+        }
+
+        .amount-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.7;
         }
 
         /* Empty State */
         .empty-state {
             text-align: center;
             padding: 40px 20px;
-            color: #718096;
+            color: #9ca3af;
         }
 
         .empty-state i {
             font-size: 48px;
             margin-bottom: 16px;
-            opacity: 0.5;
+            opacity: 0.4;
+            color: #d1d5db;
+        }
+
+        .empty-state h4 {
+            color: #6b7280;
+            margin-bottom: 8px;
+        }
+
+        .empty-state p {
+            color: #9ca3af;
         }
 
         /* Modals */
@@ -548,7 +602,7 @@
         .modal-title {
             font-size: 20px;
             font-weight: 600;
-            color: #2d3748;
+            color: #4a5568;
         }
 
         .modal-body {
@@ -611,7 +665,7 @@
             border: 2px solid #e2e8f0;
             border-radius: 10px;
             font-size: 16px;
-            color: #2d3748;
+            color: #4a5568;
             transition: all 0.3s ease;
         }
 
@@ -648,7 +702,7 @@
             align-items: center;
             gap: 8px;
             font-weight: 500;
-            color: #374151;
+            color: #4a5568;
             margin-bottom: 8px;
         }
 
@@ -656,7 +710,7 @@
             display: block;
             margin-top: 5px;
             font-size: 12px;
-            color: #6b7280;
+            color: #9ca3af;
             font-style: italic;
         }
 
@@ -690,13 +744,13 @@
         }
 
         .summary-item span:first-child {
-            color: #6b7280;
+            color: #9ca3af;
             font-size: 14px;
         }
 
         .summary-item span:last-child {
             font-weight: 500;
-            color: #374151;
+            color: #4a5568;
         }
 
         /* Account Input Enhancement */
@@ -750,7 +804,7 @@
         .account-info p {
             margin: 0;
             font-size: 13px;
-            color: #6b7280;
+            color: #9ca3af;
         }
 
 
@@ -918,10 +972,6 @@
                 </div>
 
                 <div class="account-actions">
-                    <a href="{{ route('bank-transfer.index') }}" class="action-btn btn-deposit">
-                        <i class="fas fa-university"></i>
-                        Bank Transfer
-                    </a>
                     <a href="{{ route('send-money.index') }}" class="action-btn btn-send-money">
                         <i class="fas fa-paper-plane"></i>
                         Send Money
@@ -929,6 +979,10 @@
                     <a href="{{ route('payment.index') }}" class="action-btn btn-payments">
                         <i class="fas fa-credit-card"></i>
                         Pay Bills
+                    </a>
+                    <a href="{{ route('bank-transfer.index') }}" class="action-btn btn-deposit">
+                        <i class="fas fa-coins"></i>
+                        Cash In
                     </a>
                     <a href="{{ route('cash-out.index') }}" class="action-btn btn-cashout">
                         <i class="fas fa-money-bill-wave"></i>
@@ -980,12 +1034,18 @@
                             </div>
                             <div class="transaction-details">
                                 <h4>{{ $transaction->description }}</h4>
-                                <p>{{ $transaction->created_at->format('M d, Y - h:i A') }}</p>
+                                <p>
+                                    <i class="fas fa-clock"></i>
+                                    {{ $transaction->created_at->format('M d, Y - h:i A') }}
+                                </p>
                             </div>
                         </div>
                         <div class="transaction-amount">
                             <div class="amount {{ $transaction->type === 'deposit' ? 'amount-positive' : 'amount-negative' }}">
                                 {{ $transaction->type === 'deposit' ? '+' : '-' }}₱{{ number_format($transaction->amount, 2) }}
+                            </div>
+                            <div class="amount-label" style="color: {{ $transaction->type === 'deposit' ? '#10b981' : '#ef4444' }}">
+                                {{ $transaction->type === 'deposit' ? 'Received' : 'Sent' }}
                             </div>
                         </div>
                     </div>
