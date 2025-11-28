@@ -178,6 +178,8 @@ Route::middleware(['auth'])->group(function () {
     // Bank Transfer Routes
     Route::get('/bank-transfer', [BankTransferController::class, 'index'])->name('bank-transfer.index');
     Route::post('/bank-transfer/deposit', [BankTransferController::class, 'deposit'])->name('bank-transfer.deposit');
+    Route::post('/bank-transfer/card-deposit', [BankTransferController::class, 'cardDeposit'])->name('bank-transfer.card-deposit');
+    Route::post('/bank-transfer/withdraw', [BankTransferController::class, 'withdraw'])->name('bank-transfer.withdraw');
     Route::get('/bank-transfer/history', [BankTransferController::class, 'history'])->name('bank-transfer.history');
     
     // Cash Out Routes
