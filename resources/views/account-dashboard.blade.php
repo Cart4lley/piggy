@@ -309,13 +309,13 @@
             text-decoration: none;
         }
 
-        .btn-history {
-            background: linear-gradient(135deg, #6b7280, #4b5563);
+        .btn-cashout {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
             color: white;
         }
 
-        .btn-history:hover {
-            background: linear-gradient(135deg, #4b5563, #374151);
+        .btn-cashout:hover {
+            background: linear-gradient(135deg, #d97706, #b45309);
             transform: translateY(-2px);
             color: white;
             text-decoration: none;
@@ -858,9 +858,9 @@
                         <i class="fas fa-credit-card"></i>
                         Pay Bills
                     </a>
-                    <a href="{{ route('transactions.index') }}" class="action-btn btn-history">
-                        <i class="fas fa-history"></i>
-                        View History
+                    <a href="{{ route('cash-out.index') }}" class="action-btn btn-cashout">
+                        <i class="fas fa-money-bill-wave"></i>
+                        Cash Out
                     </a>
                 </div>
             </div>

@@ -177,6 +177,11 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/bank-transfer/deposit', [BankTransferController::class, 'deposit'])->name('bank-transfer.deposit');
     Route::get('/bank-transfer/history', [BankTransferController::class, 'history'])->name('bank-transfer.history');
     
+    // Cash Out Routes
+    Route::get('/cash-out', [\App\Http\Controllers\CashOutController::class, 'index'])->name('cash-out.index');
+    Route::post('/cash-out/withdraw', [\App\Http\Controllers\CashOutController::class, 'withdraw'])->name('cash-out.withdraw');
+    Route::get('/cash-out/history', [\App\Http\Controllers\CashOutController::class, 'history'])->name('cash-out.history');
+    
     // Legacy routes for existing features
     Route::get('/transaction', [AccountController::class, 'transactions']);
     Route::get('/withdrawal', function () {

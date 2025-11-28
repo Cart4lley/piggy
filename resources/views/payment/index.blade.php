@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Payments - PIGGY Bank</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Pay Bills - PIGGY Bank</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lalezar&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         * {
@@ -15,135 +15,77 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #FFB6C1 0%, #FF9898 100%);
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #ff9999 0%, #ffb3b3 50%, #ffc9c9 100%);
             min-height: 100vh;
-            color: #2d3748;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
         }
 
-        /* Header */
-        .header {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            position: sticky;
+        body::before {
+            content: '';
+            position: absolute;
             top: 0;
-            z-index: 100;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><radialGradient id="a" cx="50%" cy="50%"><stop offset="0%" stop-color="%23FFD3D3" stop-opacity="0.15"/><stop offset="100%" stop-color="%23FFD3D3" stop-opacity="0"/></radialGradient></defs><circle cx="200" cy="200" r="150" fill="url(%23a)"/><circle cx="800" cy="300" r="200" fill="url(%23a)"/><circle cx="400" cy="700" r="100" fill="url(%23a)"/><circle cx="900" cy="800" r="120" fill="url(%23a)"/></svg>') no-repeat center center;
+            background-size: cover;
+            pointer-events: none;
         }
 
-        .header-content {
-            max-width: 1400px;
+        .container {
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 0 24px;
-            display: flex;
-            justify-content: space-between;
+            position: relative;
+            z-index: 1;
+        }
+
+        .back-btn {
+            display: inline-flex;
             align-items: center;
-            height: 80px;
-        }
-
-        .logo-section {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .logo-icon {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #FF9898 0%, #FF7B7B 100%);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            color: white;
-        }
-
-        .brand-name {
-            font-family: 'Poppins', sans-serif;
-            font-size: 24px;
-            font-weight: 700;
-            color: #2d3748;
-        }
-
-        .nav-section {
-            display: flex;
-            align-items: center;
-            gap: 24px;
-        }
-
-        .nav-link {
+            gap: 8px;
+            color: #ff7a7a;
             text-decoration: none;
-            color: #6b7280;
-            font-weight: 500;
-            padding: 8px 16px;
-            border-radius: 8px;
+            font-weight: 600;
+            margin-bottom: 20px;
             transition: all 0.2s ease;
         }
 
-        .nav-link:hover, .nav-link.active {
-            color: #FF7B7B;
-            background: rgba(255, 123, 123, 0.1);
+        .back-btn:hover {
+            color: #FF6B6B;
+            transform: translateX(-3px);
         }
 
-        .user-section {
-            display: flex;
-            align-items: center;
-            gap: 20px;
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
         }
 
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .user-avatar {
-            width: 44px;
-            height: 44px;
-            background: linear-gradient(135deg, #FF9898 0%, #FF7B7B 100%);
-            border-radius: 12px;
+        .header h1 {
+            color: #ff9999;
+            font-family: 'Lalezar', sans-serif;
+            font-size: 32px;
+            font-weight: normal;
+            margin-bottom: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-weight: 600;
+            gap: 12px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header p {
+            color: #6B7280;
             font-size: 16px;
-        }
-
-        .user-details h3 {
-            font-size: 16px;
-            font-weight: 600;
-            color: #2d3748;
-        }
-
-        .user-details p {
-            font-size: 13px;
-            color: #6b7280;
-        }
-
-        /* Main Container */
-        .main-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 40px 24px;
-        }
-
-        .page-header {
-            text-align: center;
-            margin-bottom: 48px;
-        }
-
-        .page-title {
-            font-size: 32px;
-            font-weight: 700;
-            color: #1f2937;
-            margin-bottom: 8px;
-        }
-
-        .page-subtitle {
-            font-size: 16px;
-            color: #6b7280;
+            line-height: 1.6;
             max-width: 600px;
             margin: 0 auto;
         }
@@ -153,9 +95,10 @@
             backdrop-filter: blur(20px);
             border-radius: 20px;
             padding: 24px;
-            margin-bottom: 48px;
+            margin-bottom: 40px;
             text-align: center;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .balance-label {
@@ -299,57 +242,87 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        .category-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .category-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            margin-bottom: 20px;
+            background: var(--category-color);
+            background: linear-gradient(135deg, var(--category-color) 0%, var(--category-color) 100%);
+        }
+
+        .category-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .category-description {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        .company-count {
+            font-size: 12px;
+            color: #9ca3af;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header,
+            .balance-card {
+                padding: 20px;
+            }
+
+            .categories-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .category-card {
+                padding: 24px;
+            }
+        }
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <div class="header">
-        <div class="header-content">
-            <div class="logo-section">
-                <div class="logo-icon">
-                    <i class="fas fa-piggy-bank"></i>
-                </div>
-                <span class="brand-name">PIGGY</span>
-            </div>
-            
-            <div class="nav-section">
-                <a href="{{ route('dashboard') }}" class="nav-link">
-                    <i class="fas fa-tachometer-alt"></i> Dashboard
-                </a>
-                <a href="{{ route('payment.index') }}" class="nav-link active">
-                    <i class="fas fa-credit-card"></i> Payments
-                </a>
-            </div>
+    <div class="container">
+        <a href="{{ route('dashboard') }}" class="back-btn">
+            <i class="fas fa-arrow-left"></i>
+            Back to Dashboard
+        </a>
 
-            <div class="user-section">
-                <div class="user-info">
-                    <div class="user-avatar">
-                        {{ strtoupper(substr($user->first_name ?? $user->name, 0, 1)) }}{{ strtoupper(substr($user->last_name ?? '', 0, 1)) }}
-                    </div>
-                    <div class="user-details">
-                        <h3>{{ $user->first_name ?? $user->name }} {{ $user->last_name ?? '' }}</h3>
-                        <p>{{ $account->account_number }}</p>
-                    </div>
-                </div>
-
-                <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
-                    @csrf
-                    <button type="submit" class="nav-link" style="border: none; background: none; cursor: pointer;">
-                        <i class="fas fa-sign-out-alt"></i> Logout
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Main Content -->
-    <div class="main-container">
-        <div class="page-header">
-            <h1 class="page-title">💳 Payment Center</h1>
-            <p class="page-subtitle">
-                Pay your bills, buy products, and manage services from top companies in the Philippines. 
-                Secure, fast, and convenient payments at your fingertips.
-            </p>
+        <div class="header">
+            <h1>
+                <i class="fas fa-credit-card"></i>
+                Pay Bills & Services
+            </h1>
+            <p>Pay your bills, buy products, and manage services from top companies in the Philippines. Secure, fast, and convenient payments at your fingertips.</p>
         </div>
 
         <div class="balance-card">

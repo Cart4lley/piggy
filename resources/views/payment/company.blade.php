@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $company['name'] }} Payment - PIGGY</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lalezar&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         * {
@@ -15,87 +15,47 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #FFB6C1 0%, #FF9898 100%);
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #ff9999 0%, #ffb3b3 50%, #ffc9c9 100%);
             min-height: 100vh;
-            color: #2d3748;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
         }
 
-        /* Header */
-        .header {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            position: sticky;
+        body::before {
+            content: '';
+            position: absolute;
             top: 0;
-            z-index: 100;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><radialGradient id="a" cx="50%" cy="50%"><stop offset="0%" stop-color="%23FFD3D3" stop-opacity="0.15"/><stop offset="100%" stop-color="%23FFD3D3" stop-opacity="0"/></radialGradient></defs><circle cx="200" cy="200" r="150" fill="url(%23a)"/><circle cx="800" cy="300" r="200" fill="url(%23a)"/><circle cx="400" cy="700" r="100" fill="url(%23a)"/><circle cx="900" cy="800" r="120" fill="url(%23a)"/></svg>') no-repeat center center;
+            background-size: cover;
+            pointer-events: none;
         }
 
-        .header-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 80px;
-        }
-
-        .logo-section {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .logo-icon {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #FF9898 0%, #FF7B7B 100%);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            color: white;
-        }
-
-        .brand-name {
-            font-family: 'Poppins', sans-serif;
-            font-size: 24px;
-            font-weight: 700;
-            color: #2d3748;
-        }
-
-        .user-section {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .user-avatar {
-            width: 44px;
-            height: 44px;
-            background: linear-gradient(135deg, #FF9898 0%, #FF7B7B 100%);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-            font-size: 16px;
-        }
-
-        /* Main Container */
-        .main-container {
+        .container {
             max-width: 800px;
             margin: 0 auto;
-            padding: 40px 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #ff7a7a;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 20px;
+            transition: all 0.2s ease;
+        }
+
+        .back-btn:hover {
+            color: #FF6B6B;
+            transform: translateX(-3px);
         }
 
         .breadcrumb {
@@ -364,48 +324,205 @@
             margin-bottom: 16px;
             display: none;
         }
+        .payment-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .company-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .company-logo-large {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .company-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .company-subtitle {
+            color: #6b7280;
+            font-size: 16px;
+        }
+
+        .balance-info {
+            background: #F0FDF4;
+            border: 1px solid #BBF7D0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .balance-label {
+            font-size: 14px;
+            color: #166534;
+            margin-bottom: 8px;
+        }
+
+        .balance-amount {
+            font-size: 24px;
+            font-weight: 700;
+            color: #166534;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #374151;
+            font-size: 14px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            background: #FAFBFC;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--category-color);
+            background: #FFFFFF;
+            box-shadow: 0 0 0 3px rgba(255, 153, 153, 0.1);
+        }
+
+        .payment-summary {
+            background: #F8FAFC;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .summary-row.total {
+            font-weight: 600;
+            font-size: 16px;
+            border-top: 1px solid #E5E7EB;
+            padding-top: 12px;
+            margin-top: 12px;
+        }
+
+        .pay-button {
+            width: 100%;
+            background: linear-gradient(135deg, var(--category-color) 0%, var(--category-color) 100%);
+            color: white;
+            border: none;
+            padding: 16px 24px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .pay-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .security-note {
+            text-align: center;
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .loading, .success-message {
+            text-align: center;
+            padding: 60px 20px;
+            display: none;
+        }
+
+        .loading i {
+            font-size: 48px;
+            margin-bottom: 16px;
+            color: #6b7280;
+            animation: spin 2s linear infinite;
+        }
+
+        .success-message i {
+            font-size: 48px;
+            margin-bottom: 16px;
+            color: #10b981;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .payment-container {
+                padding: 24px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <div class="header">
-        <div class="header-content">
-            <div class="logo-section">
-                <div class="logo-icon">
-                    <i class="fas fa-piggy-bank"></i>
-                </div>
-                <span class="brand-name">PIGGY</span>
-            </div>
-
-            <div class="user-section">
-                <div class="user-info">
-                    <div class="user-avatar">
-                        {{ strtoupper(substr($user->first_name ?? $user->name, 0, 1)) }}{{ strtoupper(substr($user->last_name ?? '', 0, 1)) }}
-                    </div>
-                    <div class="user-details">
-                        <h3>{{ $user->first_name ?? $user->name }} {{ $user->last_name ?? '' }}</h3>
-                        <p>{{ $account->account_number }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Main Content -->
-    <div class="main-container">
-        <div class="breadcrumb">
-            <a href="{{ route('payment.index') }}" class="breadcrumb-link">
-                <i class="fas fa-credit-card"></i> Payments
-            </a>
-            <span class="breadcrumb-separator">/</span>
-            <a href="{{ route('payment.category', $category['slug']) }}" class="breadcrumb-link">
-                {{ $category['name'] }}
-            </a>
-            <span class="breadcrumb-separator">/</span>
-            <span>{{ $company['name'] }}</span>
-        </div>
-
-        <a href="{{ route('payment.category', $category['slug']) }}" class="back-button">
+    <div class="container">
+        <a href="{{ route('payment.category', $category['slug']) }}" class="back-btn">
             <i class="fas fa-arrow-left"></i>
             Back to {{ $category['name'] }}
         </a>

@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PIGGY Bank - Responsive Design Test</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lalezar&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/responsive.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #ff9999 0%, #ffb3b3 50%, #ffc9c9 100%);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .test-section {
+            margin-bottom: 3rem;
+        }
+
+        .section-header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .section-header h2 {
+            color: #f59e0b;
+            font-family: 'Lalezar', sans-serif;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .device-info {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 12px;
+            z-index: 1000;
+        }
+
+        .breakpoint-indicator {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(245, 158, 11, 0.9);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 11px;
+            z-index: 1000;
+        }
+
+        .test-grid {
+            display: grid;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .test-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .form-test {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 0.75rem 1rem;
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #f59e0b;
+        }
+
+        .button-test {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .test-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .test-btn-primary {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+        }
+
+        .test-btn-secondary {
+            background: white;
+            color: #6B7280;
+            border: 2px solid #E5E7EB;
+        }
+
+        .test-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .stats-test {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+
+        .navigation-test {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .nav-brand {
+            font-family: 'Lalezar', sans-serif;
+            font-size: 1.5rem;
+            color: #f59e0b;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #374151;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .nav-links a:hover {
+            color: #f59e0b;
+        }
+
+        .table-test {
+            overflow-x: auto;
+            border-radius: 12px;
+            background: white;
+        }
+
+        .table-test table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table-test th,
+        .table-test td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #F3F4F6;
+        }
+
+        .table-test th {
+            background: #F9FAFB;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        /* Responsive Grid Tests */
+        .grid-1 { grid-template-columns: 1fr; }
+        .grid-2 { grid-template-columns: repeat(2, 1fr); }
+        .grid-3 { grid-template-columns: repeat(3, 1fr); }
+        .grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+        /* Breakpoint Specific Tests */
+        @media (max-width: 479px) {
+            .breakpoint-indicator::after { content: "XS Mobile (≤479px)"; }
+            .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+            .nav-links { display: none; }
+            .form-test { grid-template-columns: 1fr; }
+            .stats-test { grid-template-columns: 1fr; }
+            .button-test { flex-direction: column; }
+        }
+
+        @media (min-width: 480px) and (max-width: 599px) {
+            .breakpoint-indicator::after { content: "Small Mobile (480-599px)"; }
+            .grid-3, .grid-4 { grid-template-columns: repeat(2, 1fr); }
+            .stats-test { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (min-width: 600px) and (max-width: 767px) {
+            .breakpoint-indicator::after { content: "Large Mobile (600-767px)"; }
+            .grid-4 { grid-template-columns: repeat(2, 1fr); }
+            .form-test { grid-template-columns: repeat(2, 1fr); }
+            .stats-test { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (min-width: 768px) and (max-width: 1023px) {
+            .breakpoint-indicator::after { content: "Tablet (768-1023px)"; }
+            .form-test { grid-template-columns: repeat(2, 1fr); }
+            .stats-test { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        @media (min-width: 1024px) and (max-width: 1439px) {
+            .breakpoint-indicator::after { content: "Desktop (1024-1439px)"; }
+            .stats-test { grid-template-columns: repeat(4, 1fr); }
+        }
+
+        @media (min-width: 1440px) {
+            .breakpoint-indicator::after { content: "Large Desktop (≥1440px)"; }
+            .stats-test { grid-template-columns: repeat(4, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Device Info Display -->
+    <div class="device-info" id="deviceInfo">
+        Screen: <span id="screenSize"></span>
+    </div>
+
+    <!-- Breakpoint Indicator -->
+    <div class="breakpoint-indicator"></div>
+
+    <!-- Main Container -->
+    <div class="container-responsive">
+        <!-- Page Header -->
+        <div class="section-header">
+            <h1><i class="fas fa-mobile-alt"></i> PIGGY Bank - Responsive Design Test</h1>
+            <p>Testing responsive behavior across all device sizes and breakpoints</p>
+        </div>
+
+        <!-- Navigation Test -->
+        <div class="test-section">
+            <div class="section-header">
+                <h2>Navigation Test</h2>
+                <p>Testing responsive navigation behavior</p>
+            </div>
+            <div class="navigation-test">
+                <div class="nav-brand">🐷 PIGGY</div>
+                <ul class="nav-links">
+                    <li><a href="#dashboard">Dashboard</a></li>
+                    <li><a href="#transfer">Transfer</a></li>
+                    <li><a href="#cashout">Cash Out</a></li>
+                    <li><a href="#history">History</a></li>
+                </ul>
+                <div class="nav-toggle" style="display: none;">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grid System Test -->
+        <div class="test-section">
+            <div class="section-header">
+                <h2>Grid System Test</h2>
+                <p>Testing responsive grid behavior</p>
+            </div>
+            
+            <div class="test-grid grid-4">
+                <div class="test-card">
+                    <h3>Grid Item 1</h3>
+                    <p>This tests 4-column grid that adapts to screen size</p>
+                </div>
+                <div class="test-card">
+                    <h3>Grid Item 2</h3>
+                    <p>On mobile, this becomes single column</p>
+                </div>
+                <div class="test-card">
+                    <h3>Grid Item 3</h3>
+                    <p>On tablet, this becomes 2-3 columns</p>
+                </div>
+                <div class="test-card">
+                    <h3>Grid Item 4</h3>
+                    <p>On desktop, this shows all 4 columns</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Elements Test -->
+        <div class="test-section">
+            <div class="section-header">
+                <h2>Form Elements Test</h2>
+                <p>Testing responsive form behavior</p>
+            </div>
+            
+            <div class="test-card">
+                <div class="form-test">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" placeholder="Enter your full name">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" placeholder="Enter your email">
+                    </div>
+                    <div class="form-group">
+                        <label for="amount">Amount</label>
+                        <input type="number" id="amount" placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label for="bank">Bank</label>
+                        <select id="bank">
+                            <option>Select a bank</option>
+                            <option>BDO Unibank</option>
+                            <option>BPI</option>
+                            <option>Metrobank</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Button Test -->
+        <div class="test-section">
+            <div class="section-header">
+                <h2>Button Test</h2>
+                <p>Testing responsive button behavior</p>
+            </div>
+            
+            <div class="test-card">
+                <div class="button-test">
+                    <button class="test-btn test-btn-primary">
+                        <i class="fas fa-paper-plane"></i>
+                        Send Money
+                    </button>
+                    <button class="test-btn test-btn-primary">
+                        <i class="fas fa-money-bill-wave"></i>
+                        Cash Out
+                    </button>
+                    <button class="test-btn test-btn-secondary">
+                        <i class="fas fa-history"></i>
+                        View History
+                    </button>
+                    <button class="test-btn test-btn-secondary">
+                        <i class="fas fa-chart-line"></i>
+                        Analytics
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Cards Test -->
+        <div class="test-section">
+            <div class="section-header">
+                <h2>Statistics Cards Test</h2>
+                <p>Testing responsive stats grid behavior</p>
+            </div>
+            
+            <div class="stats-test">
+                <div class="stat-card">
+                    <div class="stat-value">₱25,450</div>
+                    <div class="stat-label">Total Balance</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">12</div>
+                    <div class="stat-label">Transactions</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">₱3,200</div>
+                    <div class="stat-label">This Month</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">5</div>
+                    <div class="stat-label">Cash Outs</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Table Test -->
+        <div class="test-section">
+            <div class="section-header">
+                <h2>Table Test</h2>
+                <p>Testing responsive table behavior</p>
+            </div>
+            
+            <div class="test-card">
+                <div class="table-test">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Description</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Nov 28, 2025</td>
+                                <td>Money Transfer</td>
+                                <td>₱1,500.00</td>
+                                <td>Completed</td>
+                                <td><button class="test-btn test-btn-secondary">View</button></td>
+                            </tr>
+                            <tr>
+                                <td>Nov 27, 2025</td>
+                                <td>Cash Out</td>
+                                <td>₱2,000.00</td>
+                                <td>Pending</td>
+                                <td><button class="test-btn test-btn-secondary">View</button></td>
+                            </tr>
+                            <tr>
+                                <td>Nov 26, 2025</td>
+                                <td>Bank Transfer</td>
+                                <td>₱5,000.00</td>
+                                <td>Completed</td>
+                                <td><button class="test-btn test-btn-secondary">View</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Typography Test -->
+        <div class="test-section">
+            <div class="section-header">
+                <h2>Typography Test</h2>
+                <p>Testing responsive typography scaling</p>
+            </div>
+            
+            <div class="test-card">
+                <h1 style="margin-bottom: 1rem; color: #f59e0b;">Heading 1 - Main Title</h1>
+                <h2 style="margin-bottom: 1rem; color: #374151;">Heading 2 - Section Title</h2>
+                <h3 style="margin-bottom: 1rem; color: #6B7280;">Heading 3 - Subsection</h3>
+                <p style="margin-bottom: 1rem;">Regular paragraph text that should scale appropriately across different device sizes. This text should remain readable and maintain proper line height and spacing.</p>
+                <p style="font-size: 0.875rem; color: #9CA3AF;">Small text for captions, labels, and secondary information that needs to remain legible on all devices.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Update screen size display
+        function updateDeviceInfo() {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            document.getElementById('screenSize').textContent = `${width} × ${height}px`;
+        }
+
+        // Initial update
+        updateDeviceInfo();
+
+        // Update on resize
+        window.addEventListener('resize', updateDeviceInfo);
+
+        // Test responsive behavior
+        function logBreakpoint() {
+            const width = window.innerWidth;
+            let breakpoint = '';
+            
+            if (width <= 479) breakpoint = 'XS Mobile';
+            else if (width <= 599) breakpoint = 'Small Mobile';
+            else if (width <= 767) breakpoint = 'Large Mobile';
+            else if (width <= 1023) breakpoint = 'Tablet';
+            else if (width <= 1439) breakpoint = 'Desktop';
+            else breakpoint = 'Large Desktop';
+            
+            console.log(`Current breakpoint: ${breakpoint} (${width}px)`);
+        }
+
+        // Log initial breakpoint
+        logBreakpoint();
+
+        // Log on resize
+        window.addEventListener('resize', logBreakpoint);
+    </script>
+</body>
+</html>
